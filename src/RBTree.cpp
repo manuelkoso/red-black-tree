@@ -41,7 +41,34 @@ void RBTree<T, CMP>::right_rotate(Node<T>* x) {
     } else {
         x->parent->right = y;
     }
-
     y->right = x;
     x->parent = y;
+}
+
+template<typename T, typename CMP>
+void RBTree<T, CMP>::insert(const T &value) {
+    Node<T>* z = new Node{value};
+    Node<T>* y = nullptr;
+    Node<T>* x = root;
+    while(x != nullptr) {
+        y = x;
+        if(value < x->key) {
+            x = x->left;
+        } else {
+            x = x->right;
+        }
+    }
+    if(y == nullptr) {
+        root = z;
+    } else if(z->key < y->key) {
+        y->left = z;
+    } else {
+        y->right = z;
+    }
+    z->left = nullptr;
+    z->right = nullptr;
+    z->color = node_color::red;
+
+    insert_fixup(z);
+
 }
