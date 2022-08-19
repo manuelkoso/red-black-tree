@@ -1,0 +1,1 @@
+add_executable(RBT-test test.cpp ../include/catch.hpp)
