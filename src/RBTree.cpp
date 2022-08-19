@@ -5,7 +5,7 @@
 #include "../include/RBTree.h"
 
 template<typename T, typename CMP>
-Node<T> *RBTree<T, CMP>::getRoot() {
+Node<T> *RBTree<T, CMP>::get_root() {
     return root;
 }
 

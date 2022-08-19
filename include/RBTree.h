@@ -25,7 +25,7 @@ public:
         delete[] root;
     }
 
-    Node<T>* getRoot();
+    Node<T>* get_root();
 
     void insert(const T& value);
 };
