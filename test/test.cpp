@@ -16,3 +16,8 @@ TEST_CASE("Node initialization") {
     REQUIRE(node->left == nullptr);
     REQUIRE(node->color == node_color::red);
 }
+
+TEST_CASE("Red black tree initialization") {
+    RBTree<int> tree;
+    REQUIRE(tree.get_root() == nullptr);
+}
