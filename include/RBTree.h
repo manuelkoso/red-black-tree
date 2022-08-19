@@ -18,6 +18,11 @@ private:
     void insert_fixup(Node<T>* node);
 
 public:
+
+    RBTree();
+
+    ~RBTree();
+
     void insert(const T& value);
 };
 

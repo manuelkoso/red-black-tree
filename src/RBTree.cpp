@@ -5,6 +5,15 @@
 #include "../include/RBTree.h"
 
 template<typename T, typename CMP>
+RBTree<T, CMP>::RBTree(): root{nullptr} {}
+
+template<typename T, typename CMP>
+RBTree<T, CMP>::~RBTree() {
+    delete[] root;
+}
+
+
+template<typename T, typename CMP>
 void RBTree<T, CMP>::left_rotate(Node<T> *x) {
     Node<T> *y = x->right;
     x->right = y->left;
