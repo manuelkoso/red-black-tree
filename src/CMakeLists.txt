@@ -1,1 +1,1 @@
-add_library(RBTree RBTree.cpp)
+add_library(RBTree RBTree.cpp Node.cpp)

@@ -1,0 +1,5 @@
+#ifndef RED_BLACK_TREE_NODE_H
+#define RED_BLACK_TREE_NODE_H
+
+
+#endif //RED_BLACK_TREE_NODE_H
