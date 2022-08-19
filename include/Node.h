@@ -10,6 +10,9 @@ struct Node {
     Node* left;
     T key;
     node_color color;
+
+    Node(T key);
+
 };
 
 #endif //RED_BLACK_TREE_NODE_H
