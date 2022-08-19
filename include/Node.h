@@ -1,8 +1,6 @@
 #ifndef RED_BLACK_TREE_NODE_H
 #define RED_BLACK_TREE_NODE_H
 
-#include <iostream>
-
 enum class node_color {red, black};
 
 template<typename T>
