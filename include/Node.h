@@ -13,6 +13,8 @@ struct Node {
 
     Node(T key);
 
+    ~Node();
+
 };
 
 #endif //RED_BLACK_TREE_NODE_H
