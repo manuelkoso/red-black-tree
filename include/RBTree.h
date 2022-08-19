@@ -19,9 +19,13 @@ private:
 
 public:
 
-    RBTree();
+    RBTree(): root{nullptr} {}
 
-    ~RBTree();
+    ~RBTree() {
+        delete[] root;
+    }
+
+    Node<T>* getRoot();
 
     void insert(const T& value);
 };

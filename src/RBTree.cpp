@@ -5,13 +5,9 @@
 #include "../include/RBTree.h"
 
 template<typename T, typename CMP>
-RBTree<T, CMP>::RBTree(): root{nullptr} {}
-
-template<typename T, typename CMP>
-RBTree<T, CMP>::~RBTree() {
-    delete[] root;
+Node<T> *RBTree<T, CMP>::getRoot() {
+    return root;
 }
-
 
 template<typename T, typename CMP>
 void RBTree<T, CMP>::left_rotate(Node<T> *x) {
