@@ -143,6 +143,7 @@ void RBTree<T, CMP>::insert_fixup(Node<T> *&z) {
             }
         }
     }
+    root->color = node_color::black;
 }
 
 #endif //RED_BLACK_TREE_RBTREE_H

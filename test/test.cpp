@@ -22,8 +22,22 @@ TEST_CASE("Red black tree initialization") {
     REQUIRE(tree.get_root() == nullptr);
 }
 
-TEST_CASE("First node insertion") {
+TEST_CASE("Root insertion") {
     RBTree<int> tree;
     tree.insert(4);
     REQUIRE(tree.get_root()->key == 4);
+    REQUIRE(tree.get_root()->color == node_color::black);
+}
+
+TEST_CASE("Insertion") {
+    RBTree<int> tree;
+    tree.insert(10);
+    REQUIRE(tree.get_root()->key == 10);
+    REQUIRE(tree.get_root()->color == node_color::black);
+    tree.insert(4);
+    REQUIRE(tree.get_root()->left->key == 4);
+    REQUIRE(tree.get_root()->left->color == node_color::red);
+    tree.insert(18);
+    REQUIRE(tree.get_root()->right->key == 18);
+    REQUIRE(tree.get_root()->right->color == node_color::red);
 }

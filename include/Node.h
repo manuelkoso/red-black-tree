@@ -21,11 +21,6 @@ struct Node {
     Node(T value, node_color color) :
             key{value}, color{color}  {}
 
-    ~Node() {
-        delete[] parent;
-        delete[] right;
-        delete[] left;
-    }
 };
 
 #endif //RED_BLACK_TREE_NODE_H
