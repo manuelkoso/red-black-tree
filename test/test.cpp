@@ -18,8 +18,19 @@ TEST_CASE("Node initialization") {
 }
 
 TEST_CASE("Red black tree initialization") {
-    RBTree<int> tree;
-    REQUIRE(tree.get_root() == nullptr);
+    SECTION("Default constructor") {
+        RBTree<int> tree;
+        REQUIRE(tree.get_root() == nullptr);
+    }
+    SECTION("Custom constructor - list of values") {
+        RBTree<int> tree {10, 4, 18};
+        REQUIRE(tree.get_root()->key == 10);
+        REQUIRE(tree.get_root()->color == node_color::black);
+        REQUIRE(tree.get_root()->left->key == 4);
+        REQUIRE(tree.get_root()->left->color == node_color::red);
+        REQUIRE(tree.get_root()->right->key == 18);
+        REQUIRE(tree.get_root()->right->color == node_color::red);
+    }
 }
 
 TEST_CASE("Root insertion") {
@@ -41,3 +52,4 @@ TEST_CASE("Insertion") {
     REQUIRE(tree.get_root()->right->key == 18);
     REQUIRE(tree.get_root()->right->color == node_color::red);
 }
+

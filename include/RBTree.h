@@ -33,6 +33,8 @@ public:
 
     RBTree() : root{nullptr} {}
 
+    RBTree(std::initializer_list<T>);
+
     ~RBTree() {
         destroy(root);
     }
@@ -42,7 +44,13 @@ public:
     void insert(const T &value);
 };
 
-// implementation
+template <typename T, typename CMP>
+RBTree<T, CMP>::RBTree(std::initializer_list<T> list): root{nullptr} {
+    for(auto element : list) {
+        insert(element);
+    }
+}
+
 template<typename T, typename CMP>
 Node<T> *RBTree<T, CMP>::get_root() {
     return root;
