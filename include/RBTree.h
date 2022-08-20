@@ -13,18 +13,17 @@ class RBTree {
 private:
 
     Node<T>* root;
-    Node<T>* nil = new Node<T>{nullptr, nullptr, nullptr, NULL, node_color::black};
 
-    void left_rotate(Node<T>* node);
-    void right_rotate(Node<T>* node);
-    void insert_fixup(Node<T>* node);
+    void left_rotate(Node<T>* &node);
+    void right_rotate(Node<T>* &node);
+    void insert_fixup(Node<T>* &node);
 
 public:
 
     RBTree(): root{nullptr} {}
 
     ~RBTree() {
-        delete[] root;
+        delete root;
     }
 
     Node<T>* get_root();
@@ -39,7 +38,7 @@ Node<T> *RBTree<T, CMP>::get_root() {
 }
 
 template<typename T, typename CMP>
-void RBTree<T, CMP>::left_rotate(Node<T> *x) {
+void RBTree<T, CMP>::left_rotate(Node<T> *&x) {
     Node<T> *y = x->right;
     x->right = y->left;
     if (y->left != nullptr) {
@@ -60,7 +59,7 @@ void RBTree<T, CMP>::left_rotate(Node<T> *x) {
 }
 
 template<typename T, typename CMP>
-void RBTree<T, CMP>::right_rotate(Node<T> *x) {
+void RBTree<T, CMP>::right_rotate(Node<T> *&x) {
     Node<T> *y = x->left;
     x->left = y->right;
     if (y->right != nullptr) {
@@ -81,12 +80,12 @@ void RBTree<T, CMP>::right_rotate(Node<T> *x) {
 
 template<typename T, typename CMP>
 void RBTree<T, CMP>::insert(const T &value) {
-    Node<T> *z = new Node{value};
+    Node<T> *z = new Node{value, node_color::none};
     Node<T> *y = nullptr;
     Node<T> *x = root;
     while (x != nullptr) {
         y = x;
-        if (value < x->key) {
+        if (z->key < x->key) {
             x = x->left;
         } else {
             x = x->right;
@@ -108,8 +107,8 @@ void RBTree<T, CMP>::insert(const T &value) {
 }
 
 template<typename T, typename CMP>
-void RBTree<T, CMP>::insert_fixup(Node<T> *z) {
-    while (z->parent->color == node_color::red) {
+void RBTree<T, CMP>::insert_fixup(Node<T> *&z) {
+    while ((z->parent) && (z->parent->parent) && (z->parent->color == node_color::red)) {
         if (z->parent == z->parent->parent->left) {
             Node<T> *y = z->parent->parent->left;
             if (y->color == node_color::red) {

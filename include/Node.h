@@ -2,7 +2,7 @@
 #define RED_BLACK_TREE_NODE_H
 
 enum class node_color {
-    red, black
+    none, red, black
 };
 
 template<typename T>
@@ -13,11 +13,10 @@ struct Node {
     T key;
     node_color color;
 
-    Node(T value) : key{value}, color{node_color::red}, parent{nullptr}, right{nullptr}, left{nullptr} {}
+    Node() : color{node_color::none} {}
 
-    Node(Node<T> *p,
-         Node<T> *r, Node<T> *l, T value, node_color color) :
-            parent{p}, right{r}, left{l}, key{value}, color{color}  {}
+    Node(T value, node_color color) :
+            key{value}, color{color}  {}
 
     ~Node() {
         delete[] parent;
