@@ -31,28 +31,45 @@ private:
 
 public:
 
+    class const_iterator {
+        Node<T> *current;
+
+        const T &operator*() const;
+
+        const T *operator->() const;
+
+        const_iterator &operator++();
+
+        const_iterator &operator++(int);
+
+        bool operator==(const const_iterator &);
+
+        bool operator!=(const const_iterator &);
+
+    };
+
     RBTree() : root{nullptr} {}
 
-    RBTree(std::initializer_list<T>);
+    RBTree(const std::initializer_list<T>);
 
     ~RBTree() {
         destroy(root);
     }
 
-    Node<T> *get_root();
+    Node<T> *get_root() const;
 
     void insert(const T &value);
 };
 
-template <typename T, typename CMP>
-RBTree<T, CMP>::RBTree(std::initializer_list<T> list): root{nullptr} {
-    for(auto element : list) {
+template<typename T, typename CMP>
+RBTree<T, CMP>::RBTree(const std::initializer_list<T> list): root{nullptr} {
+    for (auto element: list) {
         insert(element);
     }
 }
 
 template<typename T, typename CMP>
-Node<T> *RBTree<T, CMP>::get_root() {
+Node<T> *RBTree<T, CMP>::get_root() const {
     return root;
 }
 
