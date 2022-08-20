@@ -7,16 +7,16 @@ enum class node_color {
 
 template<typename T>
 struct Node {
-    Node<T> *parent;
-    Node<T> *right;
-    Node<T> *left;
+    Node<T> *parent {nullptr};
+    Node<T> *right  {nullptr};
+    Node<T> *left {nullptr};
     T key;
-    node_color color;
+    node_color color {node_color::none};
 
-    Node() : color{node_color::none} {}
+    Node() {}
 
     Node(T value) :
-            key{value}, color{node_color::none}  {}
+            key{value} {}
 
     Node(T value, node_color color) :
             key{value}, color{color}  {}
