@@ -15,6 +15,9 @@ struct Node {
 
     Node() : color{node_color::none} {}
 
+    Node(T value) :
+            key{value}, color{node_color::none}  {}
+
     Node(T value, node_color color) :
             key{value}, color{color}  {}
 
