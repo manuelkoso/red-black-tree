@@ -31,7 +31,7 @@ private:
 
 public:
 
-    class const_iterator {
+    struct const_iterator {
         Node<T> *current;
 
         const_iterator(Node<T>* node): current{node} {}
@@ -51,7 +51,11 @@ public:
     };
 
     const_iterator begin() const {
-        return const_iterator{root};
+        Node<T>* left_most_node = root;
+        while(left_most_node->left) {
+            left_most_node = left_most_node->left;
+        }
+        return const_iterator{left_most_node};
     }
     const_iterator end() const {
         return const_iterator{nullptr};

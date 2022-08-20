@@ -53,3 +53,10 @@ TEST_CASE("Insertion") {
     REQUIRE(tree.get_root()->right->color == node_color::red);
 }
 
+TEST_CASE("Iterator") {
+    RBTree<int> tree {2, 5, 3, 5, 6, 9, 10};
+    SECTION("Functions end and begin") {
+        REQUIRE(tree.begin().current->key == 2);
+        REQUIRE(tree.end().current == nullptr);
+    }
+}
