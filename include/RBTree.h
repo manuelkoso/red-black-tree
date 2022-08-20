@@ -12,23 +12,34 @@ template<typename T, typename CMP = std::less<T>>
 class RBTree {
 private:
 
-    Node<T>* root;
+    Node<T> *root;
 
-    void left_rotate(Node<T>* &node);
-    void right_rotate(Node<T>* &node);
-    void insert_fixup(Node<T>* &node);
+    void left_rotate(Node<T> *&node);
+
+    void right_rotate(Node<T> *&node);
+
+    void insert_fixup(Node<T> *&node);
+
+    void destroy(Node<T> *node) {
+        if (node) {
+            destroy(node->right);
+            destroy(node->left);
+            delete node;
+        }
+    }
+
 
 public:
 
-    RBTree(): root{nullptr} {}
+    RBTree() : root{nullptr} {}
 
     ~RBTree() {
-        delete root;
+        destroy(root);
     }
 
-    Node<T>* get_root();
+    Node<T> *get_root();
 
-    void insert(const T& value);
+    void insert(const T &value);
 };
 
 // implementation
