@@ -11,7 +11,9 @@
 template<typename T, typename CMP = std::less<T>>
 class RBTree {
 private:
+
     Node<T>* root;
+    Node<T>* nil = new Node<T>{nullptr, nullptr, nullptr, NULL, node_color::black};
 
     void left_rotate(Node<T>* node);
     void right_rotate(Node<T>* node);
