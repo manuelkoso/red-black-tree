@@ -34,6 +34,8 @@ public:
     class const_iterator {
         Node<T> *current;
 
+        const_iterator(Node<T>* node): current{node} {}
+
         const T &operator*() const;
 
         const T *operator->() const;
@@ -47,6 +49,13 @@ public:
         bool operator!=(const const_iterator &);
 
     };
+
+    const_iterator begin() const {
+        return const_iterator{root};
+    }
+    const_iterator end() const {
+        return const_iterator{nullptr};
+    }
 
     RBTree() : root{nullptr} {}
 
@@ -181,5 +190,6 @@ void RBTree<T, CMP>::insert_fixup(Node<T> *&z) {
     }
     root->color = node_color::black;
 }
+
 
 #endif //RED_BLACK_TREE_RBTREE_H
