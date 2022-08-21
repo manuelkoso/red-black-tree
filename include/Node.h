@@ -18,6 +18,9 @@ struct Node {
     Node(T value) :
             key{value} {}
 
+    Node(node_color color) :
+            color{color} {}
+
     Node(T value, node_color color) :
             key{value}, color{color}  {}
 
