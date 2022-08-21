@@ -13,12 +13,13 @@ class RBTree {
 private:
 
     Node<T> *root;
+    Node<T> *nil;
 
-    void left_rotate(Node<T> *&node);
+    void left_rotate(Node<T> *node);
 
-    void right_rotate(Node<T> *&node);
+    void right_rotate(Node<T> *node);
 
-    void insert_fixup(Node<T> *&node);
+    void insert_fixup(Node<T> *node);
 
     void destroy(Node<T> *node) {
         if (node) {
@@ -34,7 +35,7 @@ public:
     struct const_iterator {
         Node<T> *current;
 
-        const_iterator(Node<T>* node): current{node} {}
+        const_iterator(Node<T> *node) : current{node} {}
 
         const T &operator*() const;
 
@@ -51,17 +52,20 @@ public:
     };
 
     const_iterator begin() const {
-        Node<T>* left_most_node = root;
-        while(left_most_node->left) {
+        Node<T> *left_most_node = root;
+        while (left_most_node->left) {
             left_most_node = left_most_node->left;
         }
         return const_iterator{left_most_node};
     }
+
     const_iterator end() const {
         return const_iterator{nullptr};
     }
 
-    RBTree() : root{nullptr} {}
+    RBTree() : root{nullptr}, nil{new Node<T>{node_color::black}} {
+        root = nil;
+    }
 
     RBTree(const std::initializer_list<T>);
 
@@ -75,7 +79,8 @@ public:
 };
 
 template<typename T, typename CMP>
-RBTree<T, CMP>::RBTree(const std::initializer_list<T> list): root{nullptr} {
+RBTree<T, CMP>::RBTree(const std::initializer_list<T> list): root{nullptr}, nil{new Node<T>{node_color::black}} {
+    root = nil;
     for (auto element: list) {
         insert(element);
     }
@@ -87,39 +92,37 @@ Node<T> *RBTree<T, CMP>::get_root() const {
 }
 
 template<typename T, typename CMP>
-void RBTree<T, CMP>::left_rotate(Node<T> *&x) {
+void RBTree<T, CMP>::left_rotate(Node<T> *x) {
     Node<T> *y = x->right;
     x->right = y->left;
-    if (y->left != nullptr) {
+    if (y->left != nil) {
         y->left->parent = x;
     }
     y->parent = x->parent;
-
-    if (x->parent == nullptr) {
+    if (x->parent == nil) {
         root = y;
     } else if (x == x->parent->left) {
         x->parent->left = y;
     } else {
-        x->parent->left = y;
+        x->parent->right = y;
     }
-
     y->left = x;
     x->parent = y;
 }
 
 template<typename T, typename CMP>
-void RBTree<T, CMP>::right_rotate(Node<T> *&x) {
+void RBTree<T, CMP>::right_rotate(Node<T> *x) {
     Node<T> *y = x->left;
     x->left = y->right;
-    if (y->right != nullptr) {
+    if (y->right != nil) {
         y->right->parent = x;
     }
     y->parent = x->parent;
 
-    if (x->parent == nullptr) {
+    if (x->parent == nil) {
         root = y;
-    } else if (x == x->parent->right) {
-        x->parent->right = y;
+    } else if (x == x->parent->left) {
+        x->parent->left = y;
     } else {
         x->parent->right = y;
     }
@@ -130,9 +133,9 @@ void RBTree<T, CMP>::right_rotate(Node<T> *&x) {
 template<typename T, typename CMP>
 void RBTree<T, CMP>::insert(const T &value) {
     Node<T> *z = new Node{value, node_color::none};
-    Node<T> *y = nullptr;
+    Node<T> *y = nil;
     Node<T> *x = root;
-    while (x != nullptr) {
+    while (x != nil) {
         y = x;
         if (z->key < x->key) {
             x = x->left;
@@ -141,25 +144,25 @@ void RBTree<T, CMP>::insert(const T &value) {
         }
     }
     z->parent = y;
-    if (y == nullptr) {
+    if (y == nil) {
         root = z;
     } else if (z->key < y->key) {
         y->left = z;
     } else {
         y->right = z;
     }
-    z->left = nullptr;
-    z->right = nullptr;
+    z->left = nil;
+    z->right = nil;
     z->color = node_color::red;
 
     insert_fixup(z);
 }
 
 template<typename T, typename CMP>
-void RBTree<T, CMP>::insert_fixup(Node<T> *&z) {
-    while ((z->parent) && (z->parent->parent) && (z->parent->color == node_color::red)) {
+void RBTree<T, CMP>::insert_fixup(Node<T> *z) {
+    while (z->parent->color == node_color::red) {
         if (z->parent == z->parent->parent->left) {
-            Node<T> *y = z->parent->parent->left;
+            Node<T> *y = z->parent->parent->right;
             if (y->color == node_color::red) {
                 z->parent->color = node_color::black;
                 y->color = node_color::black;
@@ -175,7 +178,7 @@ void RBTree<T, CMP>::insert_fixup(Node<T> *&z) {
                 right_rotate(z->parent->parent);
             }
         } else {
-            Node<T> *y = z->parent->parent->right;
+            Node<T> *y = z->parent->parent->left;
             if (y->color == node_color::red) {
                 z->parent->color = node_color::black;
                 y->color = node_color::black;
@@ -192,6 +195,7 @@ void RBTree<T, CMP>::insert_fixup(Node<T> *&z) {
             }
         }
     }
+
     root->color = node_color::black;
 }
 
