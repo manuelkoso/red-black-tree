@@ -235,4 +235,9 @@ const T& RBTree<T,CMP>::const_iterator::operator*() const {
     return current->key;
 }
 
+template<typename T, typename CMP>
+const T* RBTree<T,CMP>::const_iterator::operator->() const {
+    return &(current->key);
+}
+
 #endif //RED_BLACK_TREE_RBTREE_H
