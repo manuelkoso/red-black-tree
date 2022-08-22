@@ -132,7 +132,7 @@ void RBTree<T, CMP>::right_rotate(Node<T> *x) {
 
 template<typename T, typename CMP>
 void RBTree<T, CMP>::insert(const T &value) {
-    Node<T> *z = new Node{value, node_color::none};
+    Node<T> *z = new Node{value};
     Node<T> *y = nil;
     Node<T> *x = root;
     while (x != nil) {
