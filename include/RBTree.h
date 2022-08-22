@@ -45,13 +45,18 @@ private:
         if (node && node != nil) {
             destroy(node->right);
             destroy(node->left);
-            std::cout << "Deleting node with key: " << node->key << std::endl;
             delete node;
         }
     }
 
 
 public:
+
+    RBTree() : root{nullptr}, nil{new Node{node_color::black}} {
+        root = nil;
+    }
+
+    RBTree(const std::initializer_list<T>);
 
     struct const_iterator {
         Node *current;
@@ -72,28 +77,11 @@ public:
 
     };
 
-    const_iterator begin() const {
-        Node *left_most_node = root;
-        while (left_most_node->left) {
-            left_most_node = left_most_node->left;
-        }
-        return const_iterator{left_most_node};
-    }
+    const_iterator begin() const;
 
-    const_iterator end() const {
-        return const_iterator{nullptr};
-    }
+    const_iterator end() const;
 
-    RBTree() : root{nullptr}, nil{new Node{node_color::black}} {
-        root = nil;
-    }
-
-    RBTree(const std::initializer_list<T>);
-
-    ~RBTree() {
-        delete nil;
-        destroy(root);
-    }
+    void insert(const T &value);
 
     Node *get_root() const {
         return root;
@@ -103,9 +91,13 @@ public:
         return nil;
     }
 
-    void insert(const T &value);
+    ~RBTree() {
+        delete nil;
+        destroy(root);
+    }
 };
 
+// constructor
 template<typename T, typename CMP>
 RBTree<T, CMP>::RBTree(const std::initializer_list<T> list): root{nullptr}, nil{new Node{node_color::black}} {
     root = nil;
@@ -114,6 +106,7 @@ RBTree<T, CMP>::RBTree(const std::initializer_list<T> list): root{nullptr}, nil{
     }
 }
 
+// insertion
 template<typename T, typename CMP>
 void RBTree<T, CMP>::left_rotate(Node *x) {
     Node *y = x->right;
@@ -222,5 +215,24 @@ void RBTree<T, CMP>::insert_fixup(Node *z) {
     root->color = node_color::black;
 }
 
+// iterator
+template<typename T, typename CMP>
+typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const {
+    Node *left_most_node = root;
+    while (left_most_node->left != nil) {
+        left_most_node = left_most_node->left;
+    }
+    return const_iterator{left_most_node};
+}
+
+template<typename T, typename CMP>
+typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::end() const {
+    return const_iterator{nullptr};
+}
+
+template<typename T, typename CMP>
+const T& RBTree<T,CMP>::const_iterator::operator*() const {
+    return current->key;
+}
 
 #endif //RED_BLACK_TREE_RBTREE_H
