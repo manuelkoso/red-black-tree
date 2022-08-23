@@ -348,6 +348,7 @@ bool RBTree<T, CMP>::erase(const T &value) {
     if (y_original_color == node_color::black) {
         delete_fixup(x);
     }
+    delete z;
     return true;
 }
 
