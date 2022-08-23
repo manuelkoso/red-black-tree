@@ -75,3 +75,23 @@ TEST_CASE("Deletion") {
         REQUIRE(tree.get_root()->left->key == 0);
     }
 }
+
+TEST_CASE("Insertion and deletion") {
+    RBTree<int> tree{0, 1, 2, 3, 4};
+    SECTION("Erase an existing node") {
+        tree.erase(4);
+        REQUIRE(tree.get_root()->right->right == tree.get_nil());
+        REQUIRE(tree.get_root()->right->left->key == 2);
+        REQUIRE(tree.get_root()->right->key == 3);
+        REQUIRE(tree.get_root()->key == 1);
+        REQUIRE(tree.get_root()->left->key == 0);
+        tree.insert(4);
+        REQUIRE(tree.get_root()->right->right->key == 4);
+        REQUIRE(tree.get_root()->right->right->right == tree.get_nil());
+        REQUIRE(tree.get_root()->right->right->left == tree.get_nil());
+        REQUIRE(tree.get_root()->right->left->key == 2);
+        REQUIRE(tree.get_root()->right->key == 3);
+        REQUIRE(tree.get_root()->key == 1);
+        REQUIRE(tree.get_root()->left->key == 0);
+    }
+}
