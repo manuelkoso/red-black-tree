@@ -46,11 +46,20 @@ TEST_CASE("Insertion") {
 }
 
 TEST_CASE("Iterator") {
-    RBTree<int> tree{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    int count = 0;
-    for (auto it = tree.begin(); it != tree.end(); ++it) {
-        REQUIRE(*it == count);
-        ++count;
+    SECTION("Iterate over a tree") {
+        RBTree<int> tree{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        int count = 0;
+        for (auto it = tree.begin(); it != tree.end(); ++it) {
+            REQUIRE(*it == count);
+            ++count;
+        }
+    }SECTION("Iterate over an empty tree") {
+        RBTree<int> empty_tree;
+        int count = 0;
+        for (auto it: empty_tree) {
+            ++count;
+        }
+        REQUIRE(count == 0);
     }
 }
 
@@ -58,8 +67,7 @@ TEST_CASE("Searching nodes") {
     RBTree<int> tree{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     SECTION("Search an existing node") {
         REQUIRE(tree.contains(3) == true);
-    }
-    SECTION("Search a not existing node") {
+    }SECTION("Search a not existing node") {
         REQUIRE(tree.contains(12) == false);
     }
 }

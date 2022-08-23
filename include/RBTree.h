@@ -196,6 +196,7 @@ void RBTree<T, CMP>::insert_fixup(std::shared_ptr<Node> z) {
 
 template<typename T, typename CMP>
 typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const {
+    if(root == nil) return const_iterator{nil.get()};
     auto left_most_node = root;
     while (left_most_node->left != nil) {
         left_most_node = left_most_node->left;
@@ -222,7 +223,7 @@ public:
     using pointer = const T *;
     using reference = const T &;
 
-    const_iterator() : current{nullptr} {}
+    const_iterator() = default;
 
     explicit const_iterator(Node *node) : current{node} {}
 
