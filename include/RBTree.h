@@ -310,9 +310,9 @@ template<typename T, typename CMP>
 bool RBTree<T, CMP>::erase(const T &value) {
     Node* z = root;
     while(z != nil) {
-        if(z->key > value) {
+        if(cmp(value, z->key)) {
             z = z->left;
-        } else if(z->key < value) {
+        } else if(cmp(z->key,value)) {
             z = z->right;
         } else {
             break;
