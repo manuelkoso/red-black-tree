@@ -58,32 +58,17 @@ public:
 
     RBTree(std::initializer_list<T>);
 
-    struct const_iterator {
-        Node *current;
-
-        const_iterator(): current{nullptr} {}
-
-        explicit const_iterator(Node *node) : current{node} {}
-
-        const T &operator*() const;
-
-        const T *operator->() const;
-
-        const_iterator &operator++();
-
-        const_iterator operator++(int);
-
-        bool operator==(const const_iterator &);
-
-        bool operator!=(const const_iterator &);
-
-    };
+    struct const_iterator;
 
     const_iterator begin() const;
 
     const_iterator end() const;
 
     void insert(const T &value);
+
+    bool contains(const T &value) const;
+
+    bool erase(const T &value);
 
     Node *get_root() const {
         return root;
@@ -217,7 +202,6 @@ void RBTree<T, CMP>::insert_fixup(Node *z) {
     root->color = node_color::black;
 }
 
-// iterator
 template<typename T, typename CMP>
 typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const {
     Node *left_most_node = root;
@@ -232,29 +216,57 @@ typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::end() const {
     return const_iterator{nil};
 }
 
+// iterator
 template<typename T, typename CMP>
-const T& RBTree<T,CMP>::const_iterator::operator*() const {
-    return current->key;
-}
+struct RBTree<T, CMP>::const_iterator {
+
+    using iterator_category = std::forward_iterator_tag;
+    using difference_type = std::ptrdiff_t;
+    using value_type = T;
+    using pointer = T *;
+    using reference = T &;
+
+    Node *current;
+
+    const_iterator() : current{nullptr} {}
+
+    explicit const_iterator(Node *node) : current{node} {}
+
+    const reference operator*() const {
+        return current->key;
+    }
+
+    const pointer operator->() const {
+        return &(current->key);
+    }
+
+    const_iterator &operator++();
+
+    const_iterator operator++(int);
+
+    bool operator==(const const_iterator &it) {
+        return (current == it.current);
+    }
+
+    bool operator!=(const const_iterator &it) {
+        return (current != it.current);
+    }
+
+};
 
 template<typename T, typename CMP>
-const T* RBTree<T,CMP>::const_iterator::operator->() const {
-    return &(current->key);
-}
+typename RBTree<T, CMP>::const_iterator &RBTree<T, CMP>::const_iterator::operator++() {
 
-template<typename T, typename CMP>
-typename RBTree<T, CMP>::const_iterator& RBTree<T, CMP>::const_iterator::operator++() {
-
-    if(current->right->left) {
-        Node* z = current->right;
-        while(z->left->left) {
+    if (current->right->left) {
+        Node *z = current->right;
+        while (z->left->left) {
             z = z->left;
         }
         current = z;
         return *this;
     }
-    Node* y = current->parent;
-    while((y->left) && (current == y->right)) {
+    Node *y = current->parent;
+    while ((y->left) && (current == y->right)) {
         current = y;
         y = y->parent;
     }
@@ -269,14 +281,14 @@ typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::const_iterator::operator
     return tmp;
 }
 
+
+// find node
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::const_iterator::operator==(const const_iterator& it) {
-    return (current == it.current);
+bool RBTree<T, CMP>::contains(const T &value) const {
+    auto it = std::find(begin(), end(), value);
+    if (it == end()) return false;
+    return true;
 }
 
-template<typename T, typename CMP>
-bool RBTree<T, CMP>::const_iterator::operator!=(const const_iterator& it) {
-    return (current != it.current);
-}
 
 #endif //RED_BLACK_TREE_RBTREE_H

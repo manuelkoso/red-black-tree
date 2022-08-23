@@ -53,3 +53,13 @@ TEST_CASE("Iterator") {
         ++count;
     }
 }
+
+TEST_CASE("Searching nodes") {
+    RBTree<int> tree{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    SECTION("Search an existing node") {
+        REQUIRE(tree.contains(3) == true);
+    }
+    SECTION("Search a not existing node") {
+        REQUIRE(tree.contains(12) == false);
+    }
+}
