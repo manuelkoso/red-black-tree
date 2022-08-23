@@ -63,3 +63,15 @@ TEST_CASE("Searching nodes") {
         REQUIRE(tree.contains(12) == false);
     }
 }
+
+TEST_CASE("Deletion") {
+    RBTree<int> tree{0, 1, 2, 3, 4};
+    SECTION("Erase an existing node") {
+        tree.erase(4);
+        REQUIRE(tree.get_root()->right->right == tree.get_nil());
+        REQUIRE(tree.get_root()->right->left->key == 2);
+        REQUIRE(tree.get_root()->right->key == 3);
+        REQUIRE(tree.get_root()->key == 1);
+        REQUIRE(tree.get_root()->left->key == 0);
+    }
+}
