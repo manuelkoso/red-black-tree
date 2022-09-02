@@ -16,9 +16,9 @@ class RBTree {
 private:
 
     struct Node {
-        Node *parent{nullptr};
-        Node *right{nullptr};
-        Node *left{nullptr};
+        std::unique_ptr<Node> parent;
+        std::unique_ptr<Node> right;
+        std::unique_ptr<Node> left;
         T key;
         node_color color{node_color::red};
 
@@ -26,13 +26,9 @@ private:
 
         explicit Node(T value) :
                 key{value} {}
-
-        explicit Node(node_color color) :
-                color{color} {}
     };
 
-    Node *root;
-    Node *nil;
+    std::unique_ptr<Node> root;
     CMP cmp;
 
     void left_rotate(Node *x);
@@ -47,20 +43,10 @@ private:
 
     Node *tree_minimum(Node *x);
 
-    void destroy(Node *node) {
-        if (node && node != nil) {
-            destroy(node->right);
-            destroy(node->left);
-            delete node;
-        }
-    }
-
 
 public:
 
-    RBTree() : root{nullptr}, nil{new Node{node_color::black}} {
-        root = nil;
-    }
+    RBTree() = default;
 
     RBTree(std::initializer_list<T>);
 
@@ -76,18 +62,6 @@ public:
 
     bool erase(const T &value);
 
-    Node *get_root() const {
-        return root;
-    }
-
-    Node *get_nil() const {
-        return nil;
-    }
-
-    ~RBTree() {
-        delete nil;
-        destroy(root);
-    }
 };
 
 // custom constructor
