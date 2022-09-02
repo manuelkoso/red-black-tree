@@ -275,20 +275,20 @@ void RBTree<T, CMP>::insert_fixup(Node* new_node) {
     root->color = node_color::black;
 }
 
-/*
+
 template<typename T, typename CMP>
 typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const {
-    if(root == nil) return const_iterator{nil};
-    Node *left_most_node = root;
-    while (left_most_node->left != nil) {
-        left_most_node = left_most_node->left;
+    if(root == nullptr) return const_iterator{nullptr};
+    Node *left_most_node = root.get();
+    while (left_most_node->left) {
+        left_most_node = left_most_node->left.get();
     }
     return const_iterator{left_most_node};
 }
 
 template<typename T, typename CMP>
 typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::end() const {
-    return const_iterator{nil};
+    return const_iterator{nullptr};
 }
 
 // iterator
@@ -335,15 +335,15 @@ template<typename T, typename CMP>
 typename RBTree<T, CMP>::const_iterator &RBTree<T, CMP>::const_iterator::operator++() {
 
     if (current->right->left) {
-        Node *z = current->right;
+        Node *z = current->right.get();
         while (z->left->left) {
-            z = z->left;
+            z = z->left.get();
         }
         current = z;
         return *this;
     }
     Node *y = current->parent;
-    while ((y->left) && (current == y->right)) {
+    while ((y->left) && (current == y->right.get())) {
         current = y;
         y = y->parent;
     }
@@ -360,8 +360,8 @@ typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::const_iterator::operator
 
 template<typename T, typename CMP>
 typename RBTree<T, CMP>::Node *RBTree<T, CMP>::tree_minimum(RBTree::Node *x) {
-    while (x->left != nil) {
-        x = x->left;
+    while (x->left) {
+        x = x->left.get();
     }
     return x;
 }
@@ -374,6 +374,7 @@ bool RBTree<T, CMP>::contains(const T &value) const {
     return true;
 }
 
+/*
 // erase node
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::erase(const T &value) {
