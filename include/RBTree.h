@@ -66,8 +66,7 @@ public:
 
 // custom constructor
 template<typename T, typename CMP>
-RBTree<T, CMP>::RBTree(const std::initializer_list<T> list): root{nullptr}, nil{new Node{node_color::black}} {
-    root = nil;
+RBTree<T, CMP>::RBTree(const std::initializer_list<T> list): root{nullptr} {
     for (auto element: list) {
         insert(element);
     }
