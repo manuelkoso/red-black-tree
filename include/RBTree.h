@@ -35,11 +35,11 @@ private:
 
     void right_rotate(std::unique_ptr<Node> &x);
 
-    void insert_fixup(Node* tmp_node);
+    void insert_fixup(Node *tmp_node);
 
-    void transplant(Node *u, Node *v);
+    std::unique_ptr<Node> transplant(Node *u, std::unique_ptr<Node> &v);
 
-    void delete_fixup(Node *x);
+    void delete_fixup(Node *x, Node *xp);
 
     Node *tree_minimum(Node *x);
 
@@ -57,10 +57,12 @@ private:
 
     bool isRightChild(std::unique_ptr<Node> &node);
 
+    Node *get_node_from_key(const T &value);
+
     std::unique_ptr<Node> &get_uniq_pointer(Node *node) {
         if (isRightChild(node)) {
             return node->parent->right;
-        } else if(isLeftChild(node)) {
+        } else if (isLeftChild(node)) {
             return node->parent->left;
         } else {
             return root;
@@ -110,12 +112,12 @@ void RBTree<T, CMP>::left_rotate(std::unique_ptr<Node> &x) {
         root = std::move(y);
         root->left = std::unique_ptr<Node>(px);
         root->left->parent = root.get();
-    } else if (parentExist(x) && isLeftChild(x)) {
+    } else if (isLeftChild(x)) {
         auto px = x.release();
         xp->left = std::move(y);
         xp->left->left = std::unique_ptr<Node>(px);
         xp->left->left->parent = xp->left.get();
-    } else if (parentExist(x) && isRightChild(x)) {
+    } else {
         auto px = x.release();
         xp->right = std::move(y);
         xp->right->left = std::unique_ptr<Node>(px);
@@ -138,12 +140,12 @@ void RBTree<T, CMP>::right_rotate(std::unique_ptr<Node> &x) {
         root = std::move(y);
         root->right = std::unique_ptr<Node>(px);
         root->right->parent = root.get();
-    } else if (parentExist(x) && isRightChild(x)) {
+    } else if (isRightChild(x)) {
         auto px = x.release();
         xp->right = std::move(y);
         xp->right->right = std::unique_ptr<Node>(px);
         xp->right->right->parent = xp->right.get();
-    } else if (parentExist(x) && isLeftChild(x)) {
+    } else {
         auto px = x.release();
         xp->left = std::move(y);
         xp->left->right = std::unique_ptr<Node>(px);
@@ -186,89 +188,88 @@ void RBTree<T, CMP>::insert(const T &value) {
 
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::parentExist(RBTree::Node *node) {
-    if(!node) return false;
+    if (!node) return false;
     if (node->parent) return true;
     return false;
 }
 
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::parentExist(std::unique_ptr<Node> &node) {
-    if(!node) return false;
+    if (!node) return false;
     if (node->parent) return true;
     return false;
 }
 
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::isLeftChild(RBTree::Node *node) {
-    if(!node || node == root.get()) return false;
+    if (!node || node == root.get()) return false;
     if (node->parent->left.get() == node) return true;
     return false;
 }
 
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::isLeftChild(std::unique_ptr<Node> &node) {
-    if(!node || node == root) return false;
+    if (!node || node == root) return false;
     if (node->parent->left == node) return true;
     return false;
 }
 
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::isRightChild(RBTree::Node *node) {
-    if(!node || node == root.get()) return false;
+    if (!node || node == root.get()) return false;
     if (node->parent->right.get() == node) return true;
     return false;
 }
 
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::isRightChild(std::unique_ptr<Node> &node) {
-    if(node || node == root) return false;
+    if (!node || node == root) return false;
     if (node->parent->right == node) return true;
     return false;
 }
 
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::checkColor(RBTree::Node *node, node_color color) {
-    if(!node && color == node_color::black) return true;
-    if(!node && color == node_color::red) return false;
+    if (!node && color == node_color::black) return true;
+    if (!node && color == node_color::red) return false;
     if (node->color == color) return true;
     return false;
 }
 
 template<typename T, typename CMP>
-void RBTree<T, CMP>::insert_fixup(Node* new_node) {
-    Node* tmp_node = new_node;
-    while (parentExist(tmp_node) && checkColor(tmp_node->parent, node_color::red)) {
-        if (parentExist(tmp_node->parent) && tmp_node->parent == tmp_node->parent->parent->left.get()) {
-            Node *y = tmp_node->parent->parent->right.get();
+void RBTree<T, CMP>::insert_fixup(Node *new_node) {
+    while (parentExist(new_node) && checkColor(new_node->parent, node_color::red)) {
+        if (parentExist(new_node->parent) && new_node->parent == new_node->parent->parent->left.get()) {
+            Node *y = new_node->parent->parent->right.get();
             if (checkColor(y, node_color::red)) {
-                tmp_node->parent->color = node_color::black;
+                new_node->parent->color = node_color::black;
                 y->color = node_color::black;
-                tmp_node->parent->parent->color = node_color::red;
-                tmp_node = tmp_node->parent->parent;
+                new_node->parent->parent->color = node_color::red;
+                new_node = new_node->parent->parent;
             } else {
-                if (tmp_node == tmp_node->parent->right.get()) {
-                    tmp_node = tmp_node->parent;
-                    left_rotate(get_uniq_pointer(tmp_node));
+                if (isRightChild(new_node)) {
+                    new_node = new_node->parent;
+                    left_rotate(get_uniq_pointer(new_node));
                 }
-                tmp_node->parent->color = node_color::black;
-                tmp_node->parent->parent->color = node_color::red;
-                right_rotate(get_uniq_pointer(tmp_node->parent->parent));
+                new_node->parent->color = node_color::black;
+                new_node->parent->parent->color = node_color::red;
+                right_rotate(get_uniq_pointer(new_node->parent->parent));
             }
         } else {
-            Node *y = tmp_node->parent->parent->left.get();
+            Node *y = new_node->parent->parent->left.get();
             if (checkColor(y, node_color::red)) {
-                tmp_node->parent->color = node_color::black;
+                new_node->parent->color = node_color::black;
                 y->color = node_color::black;
-                tmp_node->parent->parent->color = node_color::red;
-                tmp_node = tmp_node->parent->parent;
+                new_node->parent->parent->color = node_color::red;
+                new_node = new_node->parent->parent;
             } else {
-                if (tmp_node == tmp_node->parent->left.get()) {
-                    tmp_node = tmp_node->parent;
-                    right_rotate(get_uniq_pointer(tmp_node));
+                if (isLeftChild(new_node)) {
+                    new_node = new_node->parent;
+                    right_rotate(get_uniq_pointer(new_node));
                 }
-                tmp_node->parent->color = node_color::black;
-                tmp_node->parent->parent->color = node_color::red;
-                left_rotate(get_uniq_pointer(tmp_node->parent->parent));
+                new_node->parent->color = node_color::black;
+                new_node->parent->parent->color = node_color::red;
+                left_rotate(get_uniq_pointer(new_node->parent->parent));
             }
         }
     }
@@ -278,7 +279,7 @@ void RBTree<T, CMP>::insert_fixup(Node* new_node) {
 
 template<typename T, typename CMP>
 typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const {
-    if(root == nullptr) return const_iterator{nullptr};
+    if (root == nullptr) return const_iterator{nullptr};
     Node *left_most_node = root.get();
     while (left_most_node->left) {
         left_most_node = left_most_node->left.get();
@@ -374,116 +375,146 @@ bool RBTree<T, CMP>::contains(const T &value) const {
     return true;
 }
 
-/*
-// erase node
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::erase(const T &value) {
-    Node* z = root;
-    while(z != nil) {
-        if(cmp(value, z->key)) {
-            z = z->left;
-        } else if(cmp(z->key,value)) {
-            z = z->right;
+typename RBTree<T, CMP>::Node *RBTree<T, CMP>::get_node_from_key(const T &value) {
+    Node *node_to_remove = root.get();
+    while (node_to_remove) {
+        if (cmp(value, node_to_remove->key)) {
+            node_to_remove = node_to_remove->left.get();
+        } else if (cmp(node_to_remove->key, value)) {
+            node_to_remove = node_to_remove->right.get();
         } else {
             break;
         }
     }
-    if(z == nil) return false;
+    return node_to_remove;
+}
 
-    Node *y = z;
-    Node *x;
-    node_color y_original_color = y->color;
-    if (z->left == nil) {
-        x = z->right;
+// erase node
+template<typename T, typename CMP>
+bool RBTree<T, CMP>::erase(const T &value) {
+
+    Node *z = get_node_from_key(value);
+    if (!z) return false;
+
+    Node *x = nullptr;
+    Node *xp;
+    node_color original_color = z->color;
+    std::unique_ptr<Node> up;
+    std::unique_ptr<Node> uz;
+    if (!z->left) {
+        x = z->right.get();
+        xp = z;
         transplant(z, z->right);
-    } else if (z->right == nil) {
-        x = z->left;
+    } else if (!z->right) {
+        x = z->left.get();
+        xp = z;
         transplant(z, z->left);
     } else {
-        y = tree_minimum(z->right);
-        y_original_color = y->color;
-        x = y->right;
-        if (y->parent == z) {
-            x->parent = y;
+        Node *y = tree_minimum(z->right.get());
+        Node *yp = y->parent;
+        original_color = y->color;
+        x = y->right.get();
+        xp = y;
+        if (yp == z) {
+            if (x) {
+                x->parent = y;
+            }
         } else {
-            transplant(y, y->right);
-            y->right = z->right;
+            up = transplant(y, y->right);
+            xp = up->parent;
+            y->right = std::move(z->right);
             y->right->parent = y;
         }
-        transplant(z, y);
-        y->left = z->left;
+        uz = transplant(z, up);
+        y->left = std::move(uz->left);
         y->left->parent = y;
         y->color = z->color;
     }
-    if (y_original_color == node_color::black) {
-        delete_fixup(x);
+    if (original_color == node_color::black) {
+        delete_fixup(x, xp);
     }
-    delete z;
     return true;
 }
 
 template<typename T, typename CMP>
-void RBTree<T, CMP>::transplant(RBTree::Node *u, RBTree::Node *v) {
-    if (u->parent == nil) {
-        root = v;
-    } else if (u == u->parent->left) {
-        u->parent->left = v;
+std::unique_ptr<typename RBTree<T, CMP>::Node> RBTree<T, CMP>::transplant(Node *u, std::unique_ptr<Node> &v) {
+    std::unique_ptr<Node> tmp;
+    if (!u->parent) {
+        tmp = std::move(root);
+        root = std::move(v);
+        root->parent = nullptr;
+    } else if (isLeftChild(u)) {
+        tmp = std::move(u->parent->left);
+        u->parent->left = std::move(v);
+        if (u->parent->left) u->parent->left->parent = u->parent;
     } else {
-        u->parent->right = v;
+        tmp = std::move(u->parent->right);
+        u->parent->right = std::move(v);
+        if (u->parent->right) u->parent->right->parent = u->parent;
     }
-    v->parent = u->parent;
+    return tmp;
 }
 
+
 template<typename T, typename CMP>
-void RBTree<T, CMP>::delete_fixup(RBTree::Node *x) {
-    while (x != root && x->color == node_color::black) {
-        if (x == x->parent->left) {
-            Node *w = x->parent->left;
-            if (w->color == node_color::red) {
+void RBTree<T, CMP>::delete_fixup(RBTree::Node *x, Node *xp) {
+    while (x != root.get() && checkColor(x, node_color::black)) {
+        if (xp->left.get() == x) {
+            Node *w = xp->right.get();
+            if (checkColor(w, node_color::red)) {
                 w->color = node_color::black;
-                x->parent->color = node_color::red;
-                left_rotate(x->parent);
-                w = x->parent->right;
+                xp->color = node_color::red;
+                left_rotate(get_uniq_pointer(xp));
+                w = xp->right.get();
             }
-            if (w->left->color == node_color::black && w->right->color == node_color::black) {
+            if (checkColor(w->left.get(), node_color::black) && checkColor(w->right.get(), node_color::black)) {
                 w->color = node_color::red;
-                x = x->parent;
-            } else if (w->right->color == node_color::black) {
+                x = xp;
+            } else if (checkColor(w->right.get(), node_color::black)) {
                 w->left->color = node_color::black;
                 w->color = node_color::red;
-                right_rotate(w);
-                w = x->parent->right;
+                right_rotate(get_uniq_pointer(w));
+                w = xp->right.get();
             }
-            w->color = x->parent->color;
-            x->parent->color = node_color::black;
-            w->right->color = node_color::black;
-            left_rotate(x->parent);
-            x = root;
-        } else {
-            // lol
-            Node *w = x->parent->right;
-            if (w->color == node_color::red) {
-                w->color = node_color::black;
-                x->parent->color = node_color::red;
-                right_rotate(x->parent);
-                w = x->parent->left;
-            }
-            if (w->right->color == node_color::black && w->left->color == node_color::black) {
-                w->color = node_color::red;
-                x = x->parent;
-            } else if (w->left->color == node_color::black) {
+            if (w) {
+                w->color = xp->color;
+                xp->color = node_color::black;
                 w->right->color = node_color::black;
-                w->color = node_color::red;
-                left_rotate(w);
-                w = x->parent->left;
+                left_rotate(get_uniq_pointer(xp));
+                x = root.get();
+            } else {
+                x = root.get();
             }
-            w->color = x->parent->color;
-            x->parent->color = node_color::black;
-            w->left->color = node_color::black;
-            right_rotate(x->parent);
+        } else {
+            Node *w = xp->left.get();
+            if (checkColor(w, node_color::red)) {
+                w->color = node_color::black;
+                xp->color = node_color::red;
+                right_rotate(get_uniq_pointer(xp));
+                w = xp->left.get();
+            }
+            if (checkColor(w->right.get(), node_color::black) && checkColor(w->left.get(), node_color::black)) {
+                w->color = node_color::red;
+                x = xp;
+            } else if (w) {
+                if (checkColor(w->left.get(), node_color::black)) {
+                    w->right->color = node_color::black;
+                    w->color = node_color::red;
+                    left_rotate(get_uniq_pointer(w));
+                    w = xp->left.get();
+                }
+                w->color = xp->color;
+                xp->color = node_color::black;
+                w->left->color = node_color::black;
+                right_rotate(get_uniq_pointer(xp));
+                x = root.get();
+            } else {
+                x = root.get();
+            }
         }
     }
     x->color = node_color::black;
 }
-*/
+
 #endif //RED_BLACK_TREE_RBTREE_H
