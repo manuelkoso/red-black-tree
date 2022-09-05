@@ -31,4 +31,16 @@ TEST_CASE("Insertion") {
             expected_value++;
         }
     }
+    SECTION("1000 nodes") {
+        RBTree<int> tree;
+        for(auto i = -500; i < 500; i++) {
+            tree.insert(i);
+        }
+        int expected_value = -500;
+        for(auto node_value : tree) {
+            REQUIRE(node_value == expected_value);
+            expected_value++;
+        }
+    }
 }
+
