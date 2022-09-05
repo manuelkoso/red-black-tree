@@ -53,7 +53,7 @@ private:
 
     Node *get_node_from_key(const T &value) const;
 
-    std::unique_ptr<Node> &get_uniq_pointer(Node *node) const {
+    std::unique_ptr<Node> &get_uniq_pointer(Node *node) {
         if (isRightChild(node)) {
             return node->parent->right;
         } else if (isLeftChild(node)) {
@@ -120,12 +120,12 @@ void RBTree<T, CMP>::left_rotate(std::unique_ptr<Node> &x) {
     }
     y->parent = x->parent;
     auto xp = x->parent;
-    if (!parentExist(x)) {
+    if (!parentExist(x.get())) {
         auto px = x.release();
         root = std::move(y);
         root->left = std::unique_ptr<Node>(px);
         root->left->parent = root.get();
-    } else if (isLeftChild(x)) {
+    } else if (isLeftChild(x.get())) {
         auto px = x.release();
         xp->left = std::move(y);
         xp->left->left = std::unique_ptr<Node>(px);
@@ -147,12 +147,12 @@ void RBTree<T, CMP>::right_rotate(std::unique_ptr<Node> &x) {
     }
     y->parent = x->parent;
     auto xp = x->parent;
-    if (!parentExist(x)) {
+    if (!parentExist(x.get())) {
         auto px = x.release();
         root = std::move(y);
         root->right = std::unique_ptr<Node>(px);
         root->right->parent = root.get();
-    } else if (isRightChild(x)) {
+    } else if (isRightChild(x.get())) {
         auto px = x.release();
         xp->right = std::move(y);
         xp->right->right = std::unique_ptr<Node>(px);
