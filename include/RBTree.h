@@ -347,16 +347,16 @@ public:
 
 template<typename T, typename CMP>
 typename RBTree<T, CMP>::const_iterator &RBTree<T, CMP>::const_iterator::operator++() {
-    if (current->right->left) {
+    if (current->right) {
         Node *z = current->right.get();
-        while (z->left->left) {
+        while (z->left) {
             z = z->left.get();
         }
         current = z;
         return *this;
     }
     Node *y = current->parent;
-    while ((y->left) && (current == y->right.get())) {
+    while (y && (current == y->right.get())) {
         current = y;
         y = y->parent;
     }
