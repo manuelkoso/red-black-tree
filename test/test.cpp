@@ -30,12 +30,12 @@ TEST_CASE("Insertion") {
             REQUIRE(node_value == expected_value);
             expected_value++;
         }
-    }SECTION("1000 nodes") {
+    }SECTION("100 nodes") {
         RBTree<int> tree;
-        for (auto i = -500; i < 500; i++) {
+        for (auto i = -50; i < 50; i++) {
             tree.insert(i);
         }
-        int expected_value = -500;
+        int expected_value = -50;
         for (auto node_value: tree) {
             REQUIRE(node_value == expected_value);
             expected_value++;
@@ -43,28 +43,53 @@ TEST_CASE("Insertion") {
     }
 }
 
-
 TEST_CASE("Searching") {
     RBTree<int> tree;
-    for (auto i = -500; i < 500; i++) {
+    for (auto i = -50; i < 50; i++) {
         tree.insert(i);
     }
-    SECTION("Find existing values") {
-        REQUIRE(tree.contains(333));
+    SECTION("Find existing nodes") {
+        REQUIRE(tree.contains(33));
         REQUIRE(tree.contains(-22));
-        REQUIRE(tree.contains(499));
-        REQUIRE(tree.contains(-500));
-        REQUIRE(tree.contains(-77));
-        REQUIRE(tree.contains(234));
-        REQUIRE(tree.contains(400));
+        REQUIRE(tree.contains(49));
+        REQUIRE(tree.contains(-50));
+        REQUIRE(tree.contains(-7));
+        REQUIRE(tree.contains(23));
+        REQUIRE(tree.contains(40));
     }
-    SECTION("Find existing values") {
-        REQUIRE(!tree.contains(3333));
-        REQUIRE(!tree.contains(-3322));
-        REQUIRE(!tree.contains(500));
-        REQUIRE(!tree.contains(-501));
-        REQUIRE(!tree.contains(-7745));
-        REQUIRE(!tree.contains(2333));
+    SECTION("Find not existing nodes") {
+        REQUIRE(!tree.contains(333));
+        REQUIRE(!tree.contains(-332));
+        REQUIRE(!tree.contains(50));
+        REQUIRE(!tree.contains(-51));
+        REQUIRE(!tree.contains(-774));
+        REQUIRE(!tree.contains(233));
         REQUIRE(!tree.contains(-2234));
+    }
+}
+
+SCENARIO("Deletion") {
+
+    RBTree<int> tree;
+    for (auto i = -50; i < 50; i++) {
+        tree.insert(i);
+    }
+    tree.erase(40);
+    tree.erase(33);
+    tree.erase(-40);
+    tree.erase(49);
+    tree.erase(0);
+    SECTION("Remove existing nodes") {
+        REQUIRE(!tree.contains(40));
+        REQUIRE(!tree.contains(33));
+        REQUIRE(!tree.contains(-40));
+        REQUIRE(!tree.contains(49));
+        REQUIRE(!tree.contains(0));
+    } SECTION("Remove not existing nodes") {
+        REQUIRE(!tree.erase(40));
+        REQUIRE(!tree.erase(33));
+        REQUIRE(!tree.erase(-40));
+        REQUIRE(!tree.erase(49));
+        REQUIRE(!tree.erase(0));
     }
 }
