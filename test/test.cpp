@@ -17,5 +17,18 @@ TEST_CASE("Insertion") {
         tree.insert(3);
         bool check = *tree.begin() == 3;
         REQUIRE(check);
+    }SECTION("Custom constructor") {
+        RBTree<long> tree {-1 , -2, 0 ,1 , 2, 3};
+        long expected_value = -2;
+        for(auto node_value : tree) {
+            REQUIRE(node_value == expected_value);
+            expected_value++;
+        }
+        RBTree<int> second_tree {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        expected_value = 0;
+        for(auto node_value : second_tree) {
+            REQUIRE(node_value == expected_value);
+            expected_value++;
+        }
     }
 }
