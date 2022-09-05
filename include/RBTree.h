@@ -398,18 +398,19 @@ bool RBTree<T, CMP>::erase(const T &value) {
     if (!z) return false;
 
     Node *x = nullptr;
-    Node *xp;
+    Node *xp = nullptr;
     node_color original_color = z->color;
     std::unique_ptr<Node> up;
     std::unique_ptr<Node> uz;
+    std::unique_ptr<Node> tmp;
     if (!z->left) {
         x = z->right.get();
-        xp = z;
-        transplant(z, z->right);
+        xp = z->parent;
+        tmp = transplant(z, z->right);
     } else if (!z->right) {
         x = z->left.get();
-        xp = z;
-        transplant(z, z->left);
+        xp = z->parent;
+        tmp = transplant(z, z->left);
     } else {
         Node *y = tree_minimum(z->right.get());
         Node *yp = y->parent;
@@ -468,19 +469,20 @@ void RBTree<T, CMP>::delete_fixup(RBTree::Node *x, Node *xp) {
                 left_rotate(get_uniq_pointer(xp));
                 w = xp->right.get();
             }
-            if (checkColor(w->left.get(), node_color::black) && checkColor(w->right.get(), node_color::black)) {
+            if (w && checkColor(w->left.get(), node_color::black) && checkColor(w->right.get(), node_color::black)) {
                 w->color = node_color::red;
                 x = xp;
-            } else if (checkColor(w->right.get(), node_color::black)) {
-                w->left->color = node_color::black;
-                w->color = node_color::red;
-                right_rotate(get_uniq_pointer(w));
-                w = xp->right.get();
-            }
-            if (w) {
+                xp = x->parent;
+            } else if (w) {
+                if (checkColor(w->right.get(), node_color::black)) {
+                    if (w->left) w->left->color = node_color::black;
+                    w->color = node_color::red;
+                    right_rotate(get_uniq_pointer(w));
+                    w = xp->right.get();
+                }
                 w->color = xp->color;
                 xp->color = node_color::black;
-                w->right->color = node_color::black;
+                if (w->right) w->right->color = node_color::black;
                 left_rotate(get_uniq_pointer(xp));
                 x = root.get();
             } else {
@@ -494,19 +496,20 @@ void RBTree<T, CMP>::delete_fixup(RBTree::Node *x, Node *xp) {
                 right_rotate(get_uniq_pointer(xp));
                 w = xp->left.get();
             }
-            if (checkColor(w->right.get(), node_color::black) && checkColor(w->left.get(), node_color::black)) {
+            if (w && checkColor(w->right.get(), node_color::black) && checkColor(w->left.get(), node_color::black)) {
                 w->color = node_color::red;
                 x = xp;
+                xp = x->parent;
             } else if (w) {
                 if (checkColor(w->left.get(), node_color::black)) {
-                    w->right->color = node_color::black;
+                    if (w->right) w->right->color = node_color::black;
                     w->color = node_color::red;
                     left_rotate(get_uniq_pointer(w));
                     w = xp->left.get();
                 }
                 w->color = xp->color;
                 xp->color = node_color::black;
-                w->left->color = node_color::black;
+                if (w->left) w->left->color = node_color::black;
                 right_rotate(get_uniq_pointer(xp));
                 x = root.get();
             } else {
