@@ -127,10 +127,10 @@ bool RBTree<T, CMP>::check_red_node_black_children() {
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::check_number_black_nodes() {
 
-    std::vector<int> paths;
-
     Node *current = tree_minimum(root.get());
     while (current) {
+
+        std::vector<int> paths;
 
         if (current->right) {
             paths.push_back(0);
