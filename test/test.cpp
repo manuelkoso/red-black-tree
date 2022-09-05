@@ -10,3 +10,12 @@ TEST_CASE("Red black tree initialization") {
         REQUIRE(check);
     }
 }
+
+TEST_CASE("Insertion") {
+    SECTION("Root insertion") {
+        RBTree<int> tree;
+        tree.insert(3);
+        bool check = *tree.begin() == 3;
+        REQUIRE(check);
+    }
+}
