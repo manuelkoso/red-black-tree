@@ -93,3 +93,62 @@ SCENARIO("Deletion") {
         REQUIRE(!tree.erase(0));
     }
 }
+
+TEST_CASE("Copy semantics") {
+    RBTree<int> tree;
+    for (auto i = -50; i < 50; i++) {
+        tree.insert(i);
+    }
+
+    RBTree<int> copy_ass_tree = tree;
+    RBTree<int> copy_constructor_tree {tree};
+
+    int expected_value = -50;
+    for (auto node_value: tree) {
+        REQUIRE(node_value == expected_value);
+        expected_value++;
+    }
+
+    expected_value = -50;
+    for (auto node_value: copy_ass_tree) {
+        REQUIRE(node_value == expected_value);
+        expected_value++;
+    }
+
+    expected_value = -50;
+    for (auto node_value: copy_constructor_tree) {
+        REQUIRE(node_value == expected_value);
+        expected_value++;
+    }
+
+}
+
+TEST_CASE("Move semantics") {
+
+    RBTree<int> tree;
+    for (auto i = -50; i < 50; i++) {
+        tree.insert(i);
+    }
+
+    int expected_value = -50;
+    for (auto node_value: tree) {
+        REQUIRE(node_value == expected_value);
+        expected_value++;
+    }
+
+    RBTree<int> move_ass_tree = std::move(tree);
+
+    expected_value = -50;
+    for (auto node_value: move_ass_tree) {
+        REQUIRE(node_value == expected_value);
+        expected_value++;
+    }
+
+    RBTree<int> move_constructor_tree {std::move(move_ass_tree)};
+
+    expected_value = -50;
+    for (auto node_value: move_constructor_tree) {
+        REQUIRE(node_value == expected_value);
+        expected_value++;
+    }
+}

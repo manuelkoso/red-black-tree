@@ -38,7 +38,7 @@ private:
 
     Node *get_successor(Node *node) const noexcept;
 
-    void count_black_nodes_through_path(Node * node, std::vector<int> &paths, int index_of_path) const noexcept;
+    void count_black_nodes_through_path(Node *node, std::vector<int> &paths, int index_of_path) const noexcept;
 
     void left_rotate(std::unique_ptr<Node> &x) noexcept;
 
@@ -62,21 +62,27 @@ private:
 
     Node *get_node_from_key(const T &value) const noexcept;
 
-    std::unique_ptr<Node> &get_uniq_pointer(Node *node) {
-        if (isRightChild(node)) {
-            return node->parent->right;
-        } else if (isLeftChild(node)) {
-            return node->parent->left;
-        } else {
-            return root;
-        }
-    }
+    std::unique_ptr<Node> &get_uniq_pointer(Node *node);
 
 public:
 
     RBTree() = default;
-
     RBTree(std::initializer_list<T>);
+
+    RBTree(RBTree&&) noexcept = default;
+    RBTree& operator=(RBTree&&) noexcept = default;
+
+    RBTree(const RBTree& tree) {
+        for(auto node_value : tree) {
+            insert(node_value);
+        }
+    }
+    RBTree& operator=(const RBTree& tree) {
+        root.reset();
+        for(auto node_value : tree) {
+            insert(node_value);
+        }
+    }
 
     class const_iterator;
 
@@ -126,7 +132,7 @@ bool RBTree<T, CMP>::check_number_black_nodes() const noexcept {
             paths.push_back(0);
             count_black_nodes_through_path(current->left.get(), paths, paths.size() - 1);
         }
-        if(!check_all_paths_have_same_number_of_black_nodes(paths)) return false;
+        if (!check_all_paths_have_same_number_of_black_nodes(paths)) return false;
         current = get_successor(current);
     }
 
@@ -146,7 +152,8 @@ bool RBTree<T, CMP>::check_all_paths_have_same_number_of_black_nodes(const std::
 }
 
 template<typename T, typename CMP>
-void RBTree<T, CMP>::count_black_nodes_through_path(Node *node, std::vector<int> &paths, int index_of_path) const noexcept {
+void
+RBTree<T, CMP>::count_black_nodes_through_path(Node *node, std::vector<int> &paths, int index_of_path) const noexcept {
     if (node && checkColor(node, node_color::black)) {
         paths.at(index_of_path)++;
     }
@@ -177,6 +184,17 @@ RBTree<T, CMP>::RBTree(const std::initializer_list<T> list): root{nullptr} {
 }
 
 // utils
+template<typename T, typename CMP>
+std::unique_ptr<typename RBTree<T,CMP>::Node> &RBTree<T, CMP>::get_uniq_pointer(RBTree::Node *node) {
+    if (isRightChild(node)) {
+        return node->parent->right;
+    } else if (isLeftChild(node)) {
+        return node->parent->left;
+    } else {
+        return root;
+    }
+}
+
 template<typename T, typename CMP>
 typename RBTree<T, CMP>::Node *RBTree<T, CMP>::get_successor(RBTree::Node *node) const noexcept {
     Node *successor;
