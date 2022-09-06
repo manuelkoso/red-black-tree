@@ -40,27 +40,27 @@ private:
 
     void count_black_nodes_through_path(Node * node, std::vector<int> &paths, int index_of_path) const noexcept;
 
-    void left_rotate(std::unique_ptr<Node> &x);
+    void left_rotate(std::unique_ptr<Node> &x) noexcept;
 
-    void right_rotate(std::unique_ptr<Node> &x);
+    void right_rotate(std::unique_ptr<Node> &x) noexcept;
 
-    void insert_fixup(Node *new_node);
+    void insert_fixup(Node *new_node) noexcept;
 
-    std::unique_ptr<Node> transplant(Node *u, std::unique_ptr<Node> &v);
+    std::unique_ptr<Node> transplant(Node *u, std::unique_ptr<Node> &v) noexcept;
 
-    void delete_fixup(Node *x, Node *xp);
+    void delete_fixup(Node *x, Node *xp) noexcept;
 
     Node *tree_minimum(Node *x) const noexcept;
 
-    bool parentExist(Node *node) const;
+    bool parentExist(Node *node) const noexcept;
 
-    bool checkColor(Node *node, node_color color) const;
+    bool checkColor(Node *node, node_color color) const noexcept;
 
-    bool isLeftChild(Node *node) const;
+    bool isLeftChild(Node *node) const noexcept;
 
-    bool isRightChild(Node *node) const;
+    bool isRightChild(Node *node) const noexcept;
 
-    Node *get_node_from_key(const T &value) const;
+    Node *get_node_from_key(const T &value) const noexcept;
 
     std::unique_ptr<Node> &get_uniq_pointer(Node *node) {
         if (isRightChild(node)) {
@@ -198,7 +198,7 @@ typename RBTree<T, CMP>::Node *RBTree<T, CMP>::get_successor(RBTree::Node *node)
 }
 
 template<typename T, typename CMP>
-std::unique_ptr<typename RBTree<T, CMP>::Node> RBTree<T, CMP>::transplant(Node *u, std::unique_ptr<Node> &v) {
+std::unique_ptr<typename RBTree<T, CMP>::Node> RBTree<T, CMP>::transplant(Node *u, std::unique_ptr<Node> &v) noexcept {
     std::unique_ptr<Node> tmp;
     if (!u->parent) {
         tmp = std::move(root);
@@ -217,7 +217,7 @@ std::unique_ptr<typename RBTree<T, CMP>::Node> RBTree<T, CMP>::transplant(Node *
 }
 
 template<typename T, typename CMP>
-void RBTree<T, CMP>::left_rotate(std::unique_ptr<Node> &x) {
+void RBTree<T, CMP>::left_rotate(std::unique_ptr<Node> &x) noexcept {
     auto y = std::move(x->right);
     x->right = std::move(y->left);
     if (x->right) {
@@ -244,7 +244,7 @@ void RBTree<T, CMP>::left_rotate(std::unique_ptr<Node> &x) {
 }
 
 template<typename T, typename CMP>
-void RBTree<T, CMP>::right_rotate(std::unique_ptr<Node> &x) {
+void RBTree<T, CMP>::right_rotate(std::unique_ptr<Node> &x) noexcept {
     auto y = std::move(x->left);
     x->left = std::move(y->right);
     if (x->left) {
@@ -271,7 +271,7 @@ void RBTree<T, CMP>::right_rotate(std::unique_ptr<Node> &x) {
 }
 
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::parentExist(RBTree::Node *node) const {
+bool RBTree<T, CMP>::parentExist(RBTree::Node *node) const noexcept {
     if (!node) return false;
     if (node->parent) return true;
     return false;
@@ -279,7 +279,7 @@ bool RBTree<T, CMP>::parentExist(RBTree::Node *node) const {
 
 template<typename T, typename CMP>
 typename RBTree<T, CMP>::Node *RBTree<T, CMP>::tree_minimum(RBTree::Node *x) const noexcept {
-    if (!x) return nullptr;
+    if (!x) return x;
     while (x->left) {
         x = x->left.get();
     }
@@ -287,21 +287,21 @@ typename RBTree<T, CMP>::Node *RBTree<T, CMP>::tree_minimum(RBTree::Node *x) con
 }
 
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::isLeftChild(RBTree::Node *node) const {
+bool RBTree<T, CMP>::isLeftChild(RBTree::Node *node) const noexcept {
     if (!node || node == root.get()) return false;
     if (node->parent->left.get() == node) return true;
     return false;
 }
 
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::isRightChild(RBTree::Node *node) const {
+bool RBTree<T, CMP>::isRightChild(RBTree::Node *node) const noexcept {
     if (!node || node == root.get()) return false;
     if (node->parent->right.get() == node) return true;
     return false;
 }
 
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::checkColor(RBTree::Node *node, node_color color) const {
+bool RBTree<T, CMP>::checkColor(RBTree::Node *node, node_color color) const noexcept {
     if (!node && color == node_color::black) return true;
     if (!node && color == node_color::red) return false;
     if (node->color == color) return true;
@@ -309,7 +309,7 @@ bool RBTree<T, CMP>::checkColor(RBTree::Node *node, node_color color) const {
 }
 
 template<typename T, typename CMP>
-typename RBTree<T, CMP>::Node *RBTree<T, CMP>::get_node_from_key(const T &value) const {
+typename RBTree<T, CMP>::Node *RBTree<T, CMP>::get_node_from_key(const T &value) const noexcept {
     Node *node_to_remove = root.get();
     while (node_to_remove) {
         if (cmp(value, node_to_remove->key)) {
@@ -360,7 +360,7 @@ void RBTree<T, CMP>::insert(const T &value) {
 }
 
 template<typename T, typename CMP>
-void RBTree<T, CMP>::insert_fixup(Node *new_node) {
+void RBTree<T, CMP>::insert_fixup(Node *new_node) noexcept {
     while (parentExist(new_node) && checkColor(new_node->parent, node_color::red)) {
         if (parentExist(new_node->parent) && new_node->parent == new_node->parent->parent->left.get()) {
             Node *y = new_node->parent->parent->right.get();
@@ -402,12 +402,7 @@ void RBTree<T, CMP>::insert_fixup(Node *new_node) {
 // iterator
 template<typename T, typename CMP>
 typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const {
-    if (root == nullptr) return const_iterator{nullptr};
-    Node *left_most_node = root.get();
-    while (left_most_node->left) {
-        left_most_node = left_most_node->left.get();
-    }
-    return const_iterator{left_most_node};
+    return const_iterator{tree_minimum(root.get())};
 }
 
 template<typename T, typename CMP>
@@ -542,7 +537,7 @@ bool RBTree<T, CMP>::erase(const T &value) {
 }
 
 template<typename T, typename CMP>
-void RBTree<T, CMP>::delete_fixup(RBTree::Node *x, Node *xp) {
+void RBTree<T, CMP>::delete_fixup(RBTree::Node *x, Node *xp) noexcept {
     while (x != root.get() && checkColor(x, node_color::black)) {
         if (xp->left.get() == x) {
             Node *w = xp->right.get();
