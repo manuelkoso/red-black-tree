@@ -18,25 +18,27 @@ private:
         T key;
         node_color color{node_color::red};
 
-        Node() = default;
-
         explicit Node(const T &value) :
                 key{value} {}
 
-        explicit Node(T&& value) : key{std::move(value)} {}
+        explicit Node(T &&value) : key{std::move(value)} {}
 
     };
 
     std::unique_ptr<Node> root;
     CMP cmp;
 
-    bool check_root_black();
+    bool check_root_black() const noexcept;
 
-    bool check_red_node_black_children();
+    bool check_red_node_black_children() const noexcept;
 
-    bool check_number_black_nodes();
+    bool check_number_black_nodes() const noexcept;
 
-    void lol(Node *, std::vector<int> &paths, int index_of_path);
+    bool check_all_paths_have_same_number_of_black_nodes(const std::vector<int> &paths) const noexcept;
+
+    Node *get_successor(Node *node) const noexcept;
+
+    void count_black_nodes_through_path(Node * node, std::vector<int> &paths, int index_of_path) const noexcept;
 
     void left_rotate(std::unique_ptr<Node> &x);
 
@@ -48,7 +50,7 @@ private:
 
     void delete_fixup(Node *x, Node *xp);
 
-    Node *tree_minimum(Node *x) const;
+    Node *tree_minimum(Node *x) const noexcept;
 
     bool parentExist(Node *node) const;
 
@@ -87,103 +89,80 @@ public:
     bool contains(const T &value) const;
 
     bool erase(const T &value);
-
 };
 
 // check properties
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::check_root_black() {
+bool RBTree<T, CMP>::check_root_black() const noexcept {
+    if (!root) return false;
     return root->color == node_color::black;
 }
 
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::check_red_node_black_children() {
+bool RBTree<T, CMP>::check_red_node_black_children() const noexcept {
     Node *current = tree_minimum(root.get());
     while (current) {
-
         if (checkColor(current, node_color::red)) {
-            if (checkColor(current->right.get(), node_color::red) || checkColor(current->left.get(), node_color::red)) return false;
+            if (checkColor(current->right.get(), node_color::red) ||
+                checkColor(current->left.get(), node_color::red))
+                return false;
         }
-
-        if (current->right) {
-            Node *z = current->right.get();
-            while (z->left) {
-                z = z->left.get();
-            }
-            current = z;
-        } else {
-            Node *y = current->parent;
-            while (y && (current == y->right.get())) {
-                current = y;
-                y = y->parent;
-            }
-            current = y;
-        }
+        current = get_successor(current);
     }
     return true;
 }
 
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::check_number_black_nodes() {
+bool RBTree<T, CMP>::check_number_black_nodes() const noexcept {
 
     Node *current = tree_minimum(root.get());
+
     while (current) {
-
         std::vector<int> paths;
-
         if (current->right) {
             paths.push_back(0);
-            lol(current->right.get(), paths, 0);
-        }
-
-        if (current->left) {
+            count_black_nodes_through_path(current->right.get(), paths, 0);
+        } else if (current->left) {
             paths.push_back(0);
-            lol(current->left.get(), paths, paths.size() - 1);
+            count_black_nodes_through_path(current->left.get(), paths, paths.size() - 1);
         }
-        if(paths.size() > 0) {
-            int tmp = paths.at(0);
-            for (auto i = 1; i < paths.size(); i++) {
-                if (paths.at(i) != tmp) return false;
-            }
-        }
-
-        if (current->right) {
-            Node *z = current->right.get();
-            while (z->left) {
-                z = z->left.get();
-            }
-            current = z;
-        } else {
-            Node *y = current->parent;
-            while (y && (current == y->right.get())) {
-                current = y;
-                y = y->parent;
-            }
-            current = y;
-        }
+        if(!check_all_paths_have_same_number_of_black_nodes(paths)) return false;
+        current = get_successor(current);
     }
 
+    return true;
+
+}
+
+template<typename T, typename CMP>
+bool RBTree<T, CMP>::check_all_paths_have_same_number_of_black_nodes(const std::vector<int> &paths) const noexcept {
+    if (!paths.empty()) {
+        int tmp = paths.at(0);
+        for (auto i = 1; i < paths.size(); i++) {
+            if (paths.at(i) != tmp) return false;
+        }
+    }
     return true;
 }
 
 template<typename T, typename CMP>
-void RBTree<T, CMP>::lol(Node *node, std::vector<int> &paths, int index_of_path) {
+void RBTree<T, CMP>::count_black_nodes_through_path(Node *node, std::vector<int> &paths, int index_of_path) const noexcept {
     if (node && checkColor(node, node_color::black)) {
         paths.at(index_of_path)++;
     }
 
     int current_number_black_nodes = paths.at(index_of_path);
 
-    if(!node->left && !node->right) return;
+    if (!node->left && !node->right) return;
 
     if (node->left && node->right) {
-        lol(node->left.get(), paths, index_of_path);
+        count_black_nodes_through_path(node->left.get(), paths, index_of_path);
         paths.push_back(current_number_black_nodes);
-        lol(node->right.get(), paths, paths.size() - 1);
+        count_black_nodes_through_path(node->right.get(), paths, paths.size() - 1);
     } else if (!node->right) {
-        lol(node->left.get(), paths, index_of_path);
-    } else if(!node->left) {
-        lol(node->right.get(), paths, index_of_path);
+        count_black_nodes_through_path(node->left.get(), paths, index_of_path);
+    } else if (!node->left) {
+        count_black_nodes_through_path(node->right.get(), paths, index_of_path);
     }
 
 }
@@ -198,6 +177,26 @@ RBTree<T, CMP>::RBTree(const std::initializer_list<T> list): root{nullptr} {
 }
 
 // utils
+template<typename T, typename CMP>
+typename RBTree<T, CMP>::Node *RBTree<T, CMP>::get_successor(RBTree::Node *node) const noexcept {
+    Node *successor;
+    if (!node) return nullptr;
+    if (node->right) {
+        successor = node->right.get();
+        while (successor->left) {
+            successor = successor->left.get();
+        }
+        return successor;
+    } else {
+        successor = node->parent;
+        while (successor && (node == successor->right.get())) {
+            node = successor;
+            successor = successor->parent;
+        }
+        return successor;
+    }
+}
+
 template<typename T, typename CMP>
 std::unique_ptr<typename RBTree<T, CMP>::Node> RBTree<T, CMP>::transplant(Node *u, std::unique_ptr<Node> &v) {
     std::unique_ptr<Node> tmp;
@@ -279,7 +278,8 @@ bool RBTree<T, CMP>::parentExist(RBTree::Node *node) const {
 }
 
 template<typename T, typename CMP>
-typename RBTree<T, CMP>::Node *RBTree<T, CMP>::tree_minimum(RBTree::Node *x) const {
+typename RBTree<T, CMP>::Node *RBTree<T, CMP>::tree_minimum(RBTree::Node *x) const noexcept {
+    if (!x) return nullptr;
     while (x->left) {
         x = x->left.get();
     }
