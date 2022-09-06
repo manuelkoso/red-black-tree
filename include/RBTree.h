@@ -1,7 +1,3 @@
-//
-// Created by koso on 19/08/22.
-//
-
 #ifndef RED_BLACK_TREE_RBTREE_H
 #define RED_BLACK_TREE_RBTREE_H
 
@@ -24,8 +20,11 @@ private:
 
         Node() = default;
 
-        explicit Node(T value) :
+        explicit Node(const T &value) :
                 key{value} {}
+
+        explicit Node(T&& value) : key{std::move(value)} {}
+
     };
 
     std::unique_ptr<Node> root;
