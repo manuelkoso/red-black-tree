@@ -58,13 +58,13 @@ TEST_CASE("Searching") {
         REQUIRE(tree.contains(40));
     }
     SECTION("Find not existing nodes") {
-        REQUIRE(!tree.contains(333));
-        REQUIRE(!tree.contains(-332));
-        REQUIRE(!tree.contains(50));
-        REQUIRE(!tree.contains(-51));
-        REQUIRE(!tree.contains(-774));
-        REQUIRE(!tree.contains(233));
-        REQUIRE(!tree.contains(-2234));
+        REQUIRE_FALSE(tree.contains(333));
+        REQUIRE_FALSE(tree.contains(-332));
+        REQUIRE_FALSE(tree.contains(50));
+        REQUIRE_FALSE(tree.contains(-51));
+        REQUIRE_FALSE(tree.contains(-774));
+        REQUIRE_FALSE(tree.contains(233));
+        REQUIRE_FALSE(tree.contains(-2234));
     }
 }
 
@@ -80,17 +80,17 @@ SCENARIO("Deletion") {
     tree.erase(49);
     tree.erase(0);
     SECTION("Remove existing nodes") {
-        REQUIRE(!tree.contains(40));
-        REQUIRE(!tree.contains(33));
-        REQUIRE(!tree.contains(-40));
-        REQUIRE(!tree.contains(49));
-        REQUIRE(!tree.contains(0));
+        REQUIRE_FALSE(tree.contains(40));
+        REQUIRE_FALSE(tree.contains(33));
+        REQUIRE_FALSE(tree.contains(-40));
+        REQUIRE_FALSE(tree.contains(49));
+        REQUIRE_FALSE(tree.contains(0));
     } SECTION("Remove not existing nodes") {
-        REQUIRE(!tree.erase(40));
-        REQUIRE(!tree.erase(33));
-        REQUIRE(!tree.erase(-40));
-        REQUIRE(!tree.erase(49));
-        REQUIRE(!tree.erase(0));
+        REQUIRE_FALSE(tree.erase(40));
+        REQUIRE_FALSE(tree.erase(33));
+        REQUIRE_FALSE(tree.erase(-40));
+        REQUIRE_FALSE(tree.erase(49));
+        REQUIRE_FALSE(tree.erase(0));
     }
 }
 
@@ -151,4 +151,5 @@ TEST_CASE("Move semantics") {
         REQUIRE(node_value == expected_value);
         expected_value++;
     }
+
 }

@@ -508,20 +508,20 @@ bool RBTree<T, CMP>::erase(const T &value) {
     Node *z = get_node_from_key(value);
     if (!z) return false;
 
-    Node *x = nullptr;
-    Node *xp = nullptr;
+    Node *x;
+    Node *xp;
     node_color original_color = z->color;
     std::unique_ptr<Node> up;
     std::unique_ptr<Node> uz;
-    std::unique_ptr<Node> tmp;
+
     if (!z->left) {
         x = z->right.get();
         xp = z->parent;
-        tmp = transplant(z, z->right);
+        transplant(z, z->right);
     } else if (!z->right) {
         x = z->left.get();
         xp = z->parent;
-        tmp = transplant(z, z->left);
+        transplant(z, z->left);
     } else {
         Node *y = tree_minimum(z->right.get());
         Node *yp = y->parent;
