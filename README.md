@@ -14,7 +14,7 @@ same number of black nodes.
 ## Project structure
 
 The `include` folder contains the implementation 
-of the `RBTree` class. For readability reasons, the implementation 
+of the `RBTree` class (and the `catch.hpp` header). For readability reasons, the implementation 
 is split among different files as follows:
 - `RBTree.h`: declaration of the RBTree class
 - `RBTNode.h`: implementation of the private struct Node that represents a red black tree
@@ -24,12 +24,23 @@ node
 - `RBTInterface.h`: implementation of the public methods
 - `RBTPrivateFunctions`: implementation of the private functions
 
-In the `test` folder are all the tests that verify the public interface.
+In the `test` folder are all the tests that verify the public interface. There are 8 test cases:
+- Red black tree initialization
+- Insertion
+- Deletion
+- Searching
+- Move semantics
+- Copy semantics
+- Iterator
+- Output operator 
+
 
 ## Implementation choices
 
-The right and the left members of the `RBTree<T, CMP>::Node`class (that represent
-the right and the left child of the node) are unique pointers, instead of parent member
+I considered the NIL node as `nullptr`.
+
+The right and the left members of the `RBTree<T, CMP>::Node` class (that represent
+the right and the left child of the node) are unique pointers, unlike of the parent member
 (that represent the parent node) that is a raw pointer. I used unique pointers to avoid
 memory leaks.
 
@@ -37,7 +48,9 @@ In order to implement `insert` and `erase` public functions I followed the pseud
 I had to do some changes from the original pseudocode because of the unique pointers that doesn't permit copy
 assignment (only move). 
 
-TODO
+At the end of the `insert` and `erase` functions I put three assertions that check if
+the tree still satisfies the 2, 4 and 5 red black properties. The functions that checks
+these properties are implemented in the `RBTCheckPropertiesFunctions.h` file.
 
 ## Building project and running tests
 
