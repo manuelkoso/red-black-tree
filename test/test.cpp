@@ -40,6 +40,16 @@ TEST_CASE("Insertion") {
             REQUIRE(node_value == expected_value);
             expected_value++;
         }
+    } SECTION("1000 nodes") {
+        RBTree<long> tree;
+        for (auto i = -1000; i < 1000; i++) {
+            tree.insert(i);
+        }
+        int expected_value = -1000;
+        for (auto node_value: tree) {
+            REQUIRE(node_value == expected_value);
+            expected_value++;
+        }
     }
 }
 
@@ -56,8 +66,7 @@ TEST_CASE("Searching") {
         REQUIRE(tree.contains(-7));
         REQUIRE(tree.contains(23));
         REQUIRE(tree.contains(40));
-    }
-    SECTION("Find not existing nodes") {
+    }SECTION("Find not existing nodes") {
         REQUIRE_FALSE(tree.contains(333));
         REQUIRE_FALSE(tree.contains(-332));
         REQUIRE_FALSE(tree.contains(50));
@@ -101,7 +110,7 @@ TEST_CASE("Copy semantics") {
     }
 
     RBTree<int> copy_ass_tree = tree;
-    RBTree<int> copy_constructor_tree {tree};
+    RBTree<int> copy_constructor_tree{tree};
 
     int expected_value = -50;
     for (auto node_value: tree) {
@@ -144,7 +153,7 @@ TEST_CASE("Move semantics") {
         expected_value++;
     }
 
-    RBTree<int> move_constructor_tree {std::move(move_ass_tree)};
+    RBTree<int> move_constructor_tree{std::move(move_ass_tree)};
 
     expected_value = -50;
     for (auto node_value: move_constructor_tree) {
@@ -152,4 +161,14 @@ TEST_CASE("Move semantics") {
         expected_value++;
     }
 
+}
+
+TEST_CASE("Output operator <<") {
+    RBTree<int> tree;
+    for (auto i = 0; i < 10; i++) {
+        tree.insert(i);
+    }
+    std::stringstream out;
+    out << tree;
+    REQUIRE(out.str() == "0 1 2 3 4 5 6 7 8 9");
 }

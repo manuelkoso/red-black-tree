@@ -92,6 +92,18 @@ public:
     bool contains(const T &value) const;
 
     bool erase(const T &value);
+
+    friend std::ostream& operator<<(std::ostream& os, const RBTree& tree) {
+        for(auto it = tree.begin(); it!=tree.end(); ++it) {
+            if(it == tree.begin()) {
+                os << *it;
+            } else {
+                os << " " << *it;
+            }
+        }
+        return os;
+    }
+
 };
 
 #include "RBTNode.h"
