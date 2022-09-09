@@ -9,15 +9,7 @@ TEST_CASE("Red black tree initialization") {
         bool check = tree.begin() == tree.end();
         REQUIRE(check);
     }
-}
-
-TEST_CASE("Insertion") {
-    SECTION("Root insertion") {
-        RBTree<int> tree;
-        tree.insert(3);
-        bool check = *tree.begin() == 3;
-        REQUIRE(check);
-    }SECTION("Custom constructor") {
+    SECTION("Custom constructor") {
         RBTree<long> tree{-1, -2, 0, 1, 2, 3};
         long expected_value = -2;
         for (auto node_value: tree) {
@@ -30,6 +22,15 @@ TEST_CASE("Insertion") {
             REQUIRE(node_value == expected_value);
             expected_value++;
         }
+    }
+}
+
+TEST_CASE("Insertion") {
+    SECTION("Root insertion") {
+        RBTree<int> tree;
+        tree.insert(3);
+        bool check = *tree.begin() == 3;
+        REQUIRE(check);
     }SECTION("100 nodes") {
         RBTree<int> tree;
         for (auto i = -50; i < 50; i++) {
@@ -77,7 +78,7 @@ TEST_CASE("Searching") {
     }
 }
 
-SCENARIO("Deletion") {
+TEST_CASE("Deletion") {
 
     RBTree<int> tree;
     for (auto i = -50; i < 50; i++) {
@@ -171,4 +172,39 @@ TEST_CASE("Output operator <<") {
     std::stringstream out;
     out << tree;
     REQUIRE(out.str() == "0 1 2 3 4 5 6 7 8 9");
+}
+
+TEST_CASE("Iterator") {
+    RBTree<int> tree = {1, 2, 3, 4, 5};
+    SECTION("Begin") {
+        auto it = tree.begin();
+        REQUIRE(*it == 1);
+    } SECTION("End") {
+        auto it = tree.end();
+        RBTree<int>::const_iterator null_it {nullptr};
+        bool check = null_it == it;
+        REQUIRE(check);
+    } SECTION("Post increment") {
+        auto it = tree.begin();
+        REQUIRE(*(it) == 1);
+        REQUIRE(*(it++) == 1);
+        REQUIRE(*it == 2);
+    } SECTION("Pre increment") {
+        auto it = tree.begin();
+        REQUIRE(*(it) == 1);
+        REQUIRE(*(++it) == 2);
+        REQUIRE(*it == 2);
+    } SECTION("Equal and not equal") {
+        auto it_one = tree.begin();
+        auto it_second = tree.begin();
+        bool check_equal = it_one == it_second;
+        bool check_not_equal = it_one != it_second;
+        REQUIRE(check_equal);
+        REQUIRE_FALSE(check_not_equal);
+        it_one++;
+        check_equal = it_one == it_second;
+        check_not_equal = it_one != it_second;
+        REQUIRE_FALSE(check_equal);
+        REQUIRE(check_not_equal);
+    }
 }
