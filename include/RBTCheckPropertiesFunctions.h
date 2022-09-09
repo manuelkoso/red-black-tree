@@ -9,8 +9,7 @@
 
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::check_root_black() const noexcept {
-    if (!root) return false;
-    return root->color == node_color::black;
+    checkColor(root.get(), node_color::black);
 }
 
 template<typename T, typename CMP>

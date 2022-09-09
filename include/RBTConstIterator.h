@@ -8,16 +8,6 @@
 #include "RBTree.h"
 
 template<typename T, typename CMP>
-typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const {
-    return const_iterator{tree_minimum(root.get())};
-}
-
-template<typename T, typename CMP>
-typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::end() const {
-    return const_iterator{nullptr};
-}
-
-template<typename T, typename CMP>
 class RBTree<T, CMP>::const_iterator {
 
 private:
