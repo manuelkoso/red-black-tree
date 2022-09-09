@@ -5,5 +5,3 @@ project(red-black-tree)
 add_subdirectory(test)
 add_test(Test COMMAND RBT-Test)
 enable_testing()
-
-add_executable(red-black-tree main.cpp)
