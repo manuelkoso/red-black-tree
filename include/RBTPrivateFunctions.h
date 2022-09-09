@@ -151,17 +151,17 @@ bool RBTree<T, CMP>::checkColor(RBTree::Node *node, node_color color) const noex
 
 template<typename T, typename CMP>
 typename RBTree<T, CMP>::Node *RBTree<T, CMP>::get_node_from_key(const T &value) const noexcept {
-    Node *node_to_remove = root.get();
-    while (node_to_remove) {
-        if (cmp(value, node_to_remove->key)) {
-            node_to_remove = node_to_remove->left.get();
-        } else if (cmp(node_to_remove->key, value)) {
-            node_to_remove = node_to_remove->right.get();
+    Node *node = root.get();
+    while (node) {
+        if (cmp(value, node->key)) {
+            node = node->left.get();
+        } else if (cmp(node->key, value)) {
+            node = node->right.get();
         } else {
             break;
         }
     }
-    return node_to_remove;
+    return node;
 }
 
 template<typename T, typename CMP>
