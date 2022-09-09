@@ -17,14 +17,13 @@ The `include` folder contains the implementation
 of the `RBTree` class (and the `catch.hpp` header). For readability reasons, the implementation 
 is split among different files as follows:
 - `RBTree.h`: declaration of the RBTree class
-- `RBTNode.h`: implementation of the private struct Node that represents a red black tree
-node
-- `RBTCheckPropertiesFunctions.h`: implementations of functions that check 2, 4 and 5 red black properties
+- `RBTNode.h`: implementation of the private struct Node
+- `RBTCheckPropertiesFunctions.h`: implementation of functions that check 2, 4 and 5 red black properties
 - `RBTConstIterator.h`: implementation of the constant forward iterator
 - `RBTInterface.h`: implementation of the public methods
 - `RBTPrivateFunctions`: implementation of the private functions
 
-In the `test` folder are all the tests that verify the public interface. There are 8 test cases:
+In the `test` folder there are all the tests that verify the public interface. There are 8 test cases:
 - Red black tree initialization
 - Insertion
 - Deletion
@@ -49,7 +48,7 @@ I had to do some changes from the original pseudocode because of the unique poin
 assignment. 
 
 At the end of the `insert` and `erase` functions I put three assertions that check if
-the tree still satisfies the 2, 4 and 5 red black properties. The functions that checks
+the tree still satisfies the 2, 4 and 5 red black properties. The functions that check
 these properties are implemented in the `RBTCheckPropertiesFunctions.h` file.
 
 ## Building project and running tests
