@@ -10,35 +10,22 @@ enum class node_color {
 template<typename T, typename CMP = std::less<T>>
 class RBTree {
 private:
-
-    struct Node {
-        Node *parent;
-        std::unique_ptr<Node> right;
-        std::unique_ptr<Node> left;
-        T key;
-        node_color color{node_color::red};
-
-        explicit Node(const T &value) :
-                key{value} {}
-
-        explicit Node(T &&value) : key{std::move(value)} {}
-
-    };
+    struct Node;
 
     std::unique_ptr<Node> root;
     CMP cmp;
 
     bool check_root_black() const noexcept;
 
-    bool check_red_node_black_children() const noexcept;
+    bool check_red_node_has_black_children() const noexcept;
 
     bool check_number_black_nodes() const noexcept;
 
-    bool check_all_paths_have_same_number_of_black_nodes(const std::vector<int> &paths) const noexcept;
+    bool check_all_paths_have_same_number_of_black_nodes(const std::vector<int> &number_black_nodes_of_paths) const noexcept;
 
     Node *get_successor(Node *node) const noexcept;
 
-    void count_black_nodes_through_path(Node *node, std::vector<int> &paths, int index_of_path) const noexcept;
+    void count_black_nodes_through_path(Node *node, std::vector<int> &number_black_nodes_of_paths, int index_of_path) const noexcept;
 
     void left_rotate(std::unique_ptr<Node> &x) noexcept;
 
@@ -96,84 +83,6 @@ public:
 
     bool erase(const T &value);
 };
-
-// check properties
-template<typename T, typename CMP>
-bool RBTree<T, CMP>::check_root_black() const noexcept {
-    if (!root) return false;
-    return root->color == node_color::black;
-}
-
-template<typename T, typename CMP>
-bool RBTree<T, CMP>::check_red_node_black_children() const noexcept {
-    Node *current = tree_minimum(root.get());
-    while (current) {
-        if (checkColor(current, node_color::red)) {
-            if (checkColor(current->right.get(), node_color::red) ||
-                checkColor(current->left.get(), node_color::red))
-                return false;
-        }
-        current = get_successor(current);
-    }
-    return true;
-}
-
-template<typename T, typename CMP>
-bool RBTree<T, CMP>::check_number_black_nodes() const noexcept {
-
-    Node *current = tree_minimum(root.get());
-
-    while (current) {
-        std::vector<int> paths;
-        if (current->right) {
-            paths.push_back(0);
-            count_black_nodes_through_path(current->right.get(), paths, 0);
-        } else if (current->left) {
-            paths.push_back(0);
-            count_black_nodes_through_path(current->left.get(), paths, paths.size() - 1);
-        }
-        if (!check_all_paths_have_same_number_of_black_nodes(paths)) return false;
-        current = get_successor(current);
-    }
-
-    return true;
-
-}
-
-template<typename T, typename CMP>
-bool RBTree<T, CMP>::check_all_paths_have_same_number_of_black_nodes(const std::vector<int> &paths) const noexcept {
-    if (!paths.empty()) {
-        int tmp = paths.at(0);
-        for (auto i = 1; i < paths.size(); i++) {
-            if (paths.at(i) != tmp) return false;
-        }
-    }
-    return true;
-}
-
-template<typename T, typename CMP>
-void
-RBTree<T, CMP>::count_black_nodes_through_path(Node *node, std::vector<int> &paths, int index_of_path) const noexcept {
-    if (node && checkColor(node, node_color::black)) {
-        paths.at(index_of_path)++;
-    }
-
-    int current_number_black_nodes = paths.at(index_of_path);
-
-    if (!node->left && !node->right) return;
-
-    if (node->left && node->right) {
-        count_black_nodes_through_path(node->left.get(), paths, index_of_path);
-        paths.push_back(current_number_black_nodes);
-        count_black_nodes_through_path(node->right.get(), paths, paths.size() - 1);
-    } else if (!node->right) {
-        count_black_nodes_through_path(node->left.get(), paths, index_of_path);
-    } else if (!node->left) {
-        count_black_nodes_through_path(node->right.get(), paths, index_of_path);
-    }
-
-}
-
 
 // custom constructor
 template<typename T, typename CMP>
@@ -372,7 +281,7 @@ void RBTree<T, CMP>::insert(const T &value) {
         new_node_parent->right->color = node_color::red;
         insert_fixup(new_node_parent->right.get());
     }
-    assert(check_red_node_black_children());
+    assert(check_red_node_has_black_children());
     assert(check_root_black());
     assert(check_number_black_nodes());
 }
@@ -415,82 +324,6 @@ void RBTree<T, CMP>::insert_fixup(Node *new_node) noexcept {
         }
     }
     root->color = node_color::black;
-}
-
-// iterator
-template<typename T, typename CMP>
-typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const {
-    return const_iterator{tree_minimum(root.get())};
-}
-
-template<typename T, typename CMP>
-typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::end() const {
-    return const_iterator{nullptr};
-}
-
-template<typename T, typename CMP>
-class RBTree<T, CMP>::const_iterator {
-
-private:
-    Node *current;
-
-public:
-    using iterator_category = std::forward_iterator_tag;
-    using difference_type = std::ptrdiff_t;
-    using value_type = const T;
-    using pointer = const T *;
-    using reference = const T &;
-
-    const_iterator() : current{nullptr} {}
-
-    explicit const_iterator(Node *node) : current{node} {}
-
-    reference operator*() const {
-        return current->key;
-    }
-
-    pointer operator->() const {
-        return &(current->key);
-    }
-
-    const_iterator &operator++();
-
-    const_iterator operator++(int);
-
-    bool operator==(const const_iterator &it) {
-        return (current == it.current);
-    }
-
-    bool operator!=(const const_iterator &it) {
-        return (current != it.current);
-    }
-
-};
-
-template<typename T, typename CMP>
-typename RBTree<T, CMP>::const_iterator &RBTree<T, CMP>::const_iterator::operator++() {
-    if (current->right) {
-        Node *z = current->right.get();
-        while (z->left) {
-            z = z->left.get();
-        }
-        current = z;
-        return *this;
-    }
-    Node *y = current->parent;
-    while (y && (current == y->right.get())) {
-        current = y;
-        y = y->parent;
-    }
-    current = y;
-    return *this;
-}
-
-template<typename T, typename CMP>
-typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::const_iterator::operator++(int) {
-    auto tmp = *this;
-    ++(*this);
-    return tmp;
 }
 
 // find node
@@ -547,7 +380,7 @@ bool RBTree<T, CMP>::erase(const T &value) {
         delete_fixup(x, xp);
     }
 
-    assert(check_red_node_black_children());
+    assert(check_red_node_has_black_children());
     assert(check_root_black());
     assert(check_number_black_nodes());
 
@@ -615,5 +448,9 @@ void RBTree<T, CMP>::delete_fixup(RBTree::Node *x, Node *xp) noexcept {
     }
     x->color = node_color::black;
 }
+
+#include "RBTNode.h"
+#include "RBTConstIterator.h"
+#include "RBTCheckPropertiesFunctions.h"
 
 #endif //RED_BLACK_TREE_RBTREE_H
