@@ -44,9 +44,9 @@ the right and the left child of the node) are unique pointers, unlike of the par
 (that represent the parent node) that is a raw pointer. I used unique pointers to avoid
 memory leaks.
 
-In order to implement `insert` and `erase` public functions I followed the pseudocode in [1]. 
-I had to do some changes from the original pseudocode because of the unique pointers that doesn't permit copy
-assignment (only move). 
+The implementation of the `insert` and `erase` public functions follows the pseudocode in [1]. 
+I had to do some changes from the original pseudocode because of the unique pointers that don't permit copy
+assignment. 
 
 At the end of the `insert` and `erase` functions I put three assertions that check if
 the tree still satisfies the 2, 4 and 5 red black properties. The functions that checks
