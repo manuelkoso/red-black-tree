@@ -45,7 +45,7 @@ public:
     }
 
     // utility function
-    Node* node() const noexcept {return current;}
+    Node *node() const noexcept { return current; }
 
 };
 

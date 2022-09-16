@@ -16,38 +16,31 @@ private:
     CMP cmp;
 
     // check red black tree properties
-    bool check_root_black() const noexcept;
+    bool check_root_black() const;
 
-    bool check_red_node_has_black_children() const noexcept;
+    bool check_red_node_has_black_children() const;
 
-    bool check_number_black_nodes() const noexcept;
+    bool check_number_black_nodes() const;
 
-    bool check_all_paths_have_same_number_of_black_nodes(const std::vector<int> &number_black_nodes_of_paths) const noexcept;
+    bool check_all_paths_have_same_number_of_black_nodes(const std::vector<int> &number_black_nodes_of_paths) const;
 
-    void count_black_nodes_through_path(Node *node, std::vector<int> &number_black_nodes_of_paths, int index_of_path) const noexcept;
+    void
+    count_black_nodes_through_path(Node *node, std::vector<int> &number_black_nodes_of_paths, int index_of_path) const;
 
     // utils
-    void left_rotate(std::unique_ptr<Node> &x) noexcept;
+    void left_rotate(std::unique_ptr<Node> &x);
 
-    void right_rotate(std::unique_ptr<Node> &x) noexcept;
+    void right_rotate(std::unique_ptr<Node> &x);
 
-    std::unique_ptr<Node> transplant(Node *u, std::unique_ptr<Node> &v) noexcept;
+    std::unique_ptr<Node> transplant(Node *u, std::unique_ptr<Node> &v);
 
-    void delete_fixup(Node *x, Node *xp) noexcept;
+    void delete_fixup(Node *x, Node *xp);
 
-    void insert_fixup(Node *new_node) noexcept;
+    void insert_fixup(Node *new_node);
 
-    Node *tree_minimum(Node *x) const noexcept;
+    Node *tree_minimum(Node *x) const;
 
-    bool parentExist(Node *node) const noexcept;
-
-    bool checkColor(Node *node, node_color color) const noexcept;
-
-    bool isLeftChild(Node *node) const noexcept;
-
-    bool isRightChild(Node *node) const noexcept;
-
-    Node *find(const T &value) const noexcept;
+    Node *find(const T &value) const;
 
     std::unique_ptr<Node> &get_uniq_pointer(Node *node);
 
@@ -57,25 +50,28 @@ public:
 
     // constructors
     RBTree() = default;
-    RBTree(std::initializer_list<T> list): root{nullptr} {
+
+    RBTree(std::initializer_list<T> list) : root{nullptr} {
         for (auto element: list) {
             insert(element);
         }
     }
 
     // move semantics
-    RBTree(RBTree&&) noexcept = default;
-    RBTree& operator=(RBTree&&) noexcept = default;
+    RBTree(RBTree &&) noexcept = default;
+
+    RBTree &operator=(RBTree &&) noexcept = default;
 
     // Copy semantics
-    RBTree(const RBTree& tree) {
-        for(auto node_value : tree) {
+    RBTree(const RBTree &tree) {
+        for (auto node_value: tree) {
             insert(node_value);
         }
     }
-    RBTree& operator=(const RBTree& tree) {
+
+    RBTree &operator=(const RBTree &tree) {
         root.reset();
-        for(auto node_value : tree) {
+        for (auto node_value: tree) {
             insert(node_value);
         }
     }
@@ -91,9 +87,9 @@ public:
 
     bool erase(const T &value);
 
-    friend std::ostream& operator<<(std::ostream& os, const RBTree& tree) {
-        for(auto it = tree.begin(); it!=tree.end(); ++it) {
-            if(it == tree.begin()) {
+    friend std::ostream &operator<<(std::ostream &os, const RBTree &tree) {
+        for (auto it = tree.begin(); it != tree.end(); ++it) {
+            if (it == tree.begin()) {
                 os << *it;
             } else {
                 os << " " << *it;
