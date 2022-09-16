@@ -2,6 +2,9 @@
 #define RED_BLACK_TREE_RBTREE_H
 
 #include <functional>
+#include <memory>
+#include <vector>
+#include <iostream>
 
 template<typename T, typename CMP = std::less<T>>
 class RBTree {
@@ -9,7 +12,6 @@ private:
 
     enum class node_color { red, black };
     struct Node;
-
     std::unique_ptr<Node> root {nullptr};
     CMP cmp;
 

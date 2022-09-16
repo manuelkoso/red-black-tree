@@ -6,6 +6,9 @@
 #define RED_BLACK_TREE_RBTINTERFACE_H
 
 #include "RBTree.h"
+#include <memory>
+#include <cassert>
+#include <algorithm>
 
 template<typename T, typename CMP>
 typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const {
@@ -19,7 +22,7 @@ typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::end() const {
 
 template<typename T, typename CMP>
 void RBTree<T, CMP>::insert(const T &value) {
-    std::unique_ptr new_node = std::make_unique<Node>(value);
+    auto new_node = std::make_unique<Node>(value);
     Node *new_node_parent = root.get();
     Node *tmp_node = root.get();
     while (tmp_node) {

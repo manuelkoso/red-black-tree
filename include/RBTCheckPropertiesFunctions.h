@@ -46,7 +46,7 @@ bool RBTree<T, CMP>::check_all_paths_have_same_number_of_black_nodes(
         const std::vector<unsigned int> &number_black_nodes_of_paths) const noexcept {
     if (!number_black_nodes_of_paths.empty()) {
         auto tmp = number_black_nodes_of_paths.at(0);
-        for (auto i = 1; i < number_black_nodes_of_paths.size(); i++) {
+        for (std::size_t i = 1; i < number_black_nodes_of_paths.size(); i++) {
             if (number_black_nodes_of_paths.at(i) != tmp) return false;
         }
     }
