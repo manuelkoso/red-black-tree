@@ -14,14 +14,13 @@ bool RBTree<T, CMP>::check_root_black() const noexcept {
 
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::check_red_node_has_black_children() const noexcept {
-    Node *current = tree_minimum(root.get());
-    while (current) {
-        if (checkColor(current, node_color::red)) {
-            if (checkColor(current->right.get(), node_color::red) ||
-                checkColor(current->left.get(), node_color::red))
+
+    for(auto it = begin(); it!=end(); ++it) {
+        if (checkColor(it.node(), node_color::red)) {
+            if (checkColor(it.node()->right.get(), node_color::red) ||
+                checkColor(it.node()->left.get(), node_color::red))
                 return false;
         }
-        current = get_successor(current);
     }
     return true;
 }
@@ -29,19 +28,16 @@ bool RBTree<T, CMP>::check_red_node_has_black_children() const noexcept {
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::check_number_black_nodes() const noexcept {
 
-    Node *current = tree_minimum(root.get());
-
-    while (current) {
+    for(auto it = begin(); it!=end(); ++it) {
         std::vector<int> paths;
-        if (current->right) {
+        if (it.node()->right) {
             paths.push_back(0);
-            count_black_nodes_through_path(current->right.get(), paths, 0);
-        } else if (current->left) {
+            count_black_nodes_through_path(it.node()->right.get(), paths, 0);
+        } else if (it.node()->left) {
             paths.push_back(0);
-            count_black_nodes_through_path(current->left.get(), paths, paths.size() - 1);
+            count_black_nodes_through_path(it.node()->left.get(), paths, paths.size() - 1);
         }
         if (!check_all_paths_have_same_number_of_black_nodes(paths)) return false;
-        current = get_successor(current);
     }
 
     return true;

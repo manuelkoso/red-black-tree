@@ -44,6 +44,9 @@ public:
         return (current != it.current);
     }
 
+    // utility function
+    Node* node() const noexcept {return current;}
+
 };
 
 template<typename T, typename CMP>
