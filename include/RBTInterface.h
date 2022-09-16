@@ -55,7 +55,7 @@ void RBTree<T, CMP>::insert(const T &value) {
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::erase(const T &value) {
 
-    Node *z = get_node_from_key(value);
+    Node *z = find(value);
     if (!z) return false;
 
     Node *x;

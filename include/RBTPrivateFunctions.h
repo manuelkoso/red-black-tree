@@ -19,26 +19,6 @@ std::unique_ptr<typename RBTree<T,CMP>::Node> &RBTree<T, CMP>::get_uniq_pointer(
 }
 
 template<typename T, typename CMP>
-typename RBTree<T, CMP>::Node *RBTree<T, CMP>::get_successor(RBTree::Node *node) const noexcept {
-    Node *successor;
-    if (!node) return nullptr;
-    if (node->right) {
-        successor = node->right.get();
-        while (successor->left) {
-            successor = successor->left.get();
-        }
-        return successor;
-    } else {
-        successor = node->parent;
-        while (successor && (node == successor->right.get())) {
-            node = successor;
-            successor = successor->parent;
-        }
-        return successor;
-    }
-}
-
-template<typename T, typename CMP>
 std::unique_ptr<typename RBTree<T, CMP>::Node> RBTree<T, CMP>::transplant(Node *u, std::unique_ptr<Node> &v) noexcept {
     std::unique_ptr<Node> tmp;
     if (!u->parent) {
@@ -150,18 +130,11 @@ bool RBTree<T, CMP>::checkColor(RBTree::Node *node, node_color color) const noex
 }
 
 template<typename T, typename CMP>
-typename RBTree<T, CMP>::Node *RBTree<T, CMP>::get_node_from_key(const T &value) const noexcept {
-    Node *node = root.get();
-    while (node) {
-        if (cmp(value, node->key)) {
-            node = node->left.get();
-        } else if (cmp(node->key, value)) {
-            node = node->right.get();
-        } else {
-            break;
-        }
+typename RBTree<T, CMP>::Node *RBTree<T, CMP>::find(const T &value) const noexcept {
+    for(auto it = begin(); it!=end(); ++it) {
+        if(*it == value) return it.node();
     }
-    return node;
+    return nullptr;
 }
 
 template<typename T, typename CMP>

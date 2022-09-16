@@ -39,8 +39,6 @@ private:
 
     Node *tree_minimum(Node *x) const noexcept;
 
-    Node *get_successor(Node *node) const noexcept;
-
     bool parentExist(Node *node) const noexcept;
 
     bool checkColor(Node *node, node_color color) const noexcept;
@@ -49,7 +47,7 @@ private:
 
     bool isRightChild(Node *node) const noexcept;
 
-    Node *get_node_from_key(const T &value) const noexcept;
+    Node *find(const T &value) const noexcept;
 
     std::unique_ptr<Node> &get_uniq_pointer(Node *node);
 
