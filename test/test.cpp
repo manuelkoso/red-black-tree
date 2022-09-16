@@ -1,15 +1,14 @@
 #define CATCH_CONFIG_MAIN
 
-#include "../include/catch.hpp"
 #include "../include/RBTree.h"
+#include <catch2/catch_all.hpp>
 
 TEST_CASE("Red black tree initialization") {
     SECTION("Default constructor") {
         RBTree<int> tree;
         bool check = tree.begin() == tree.end();
         REQUIRE(check);
-    }
-    SECTION("Custom constructor") {
+    }SECTION("Custom constructor") {
         RBTree<long> tree{-1, -2, 0, 1, 2, 3};
         long expected_value = -2;
         for (auto node_value: tree) {
@@ -196,7 +195,7 @@ TEST_CASE("Iterator") {
         REQUIRE(*it == 1);
     } SECTION("End") {
         auto it = tree.end();
-        RBTree<int>::const_iterator null_it {nullptr};
+        RBTree<int>::const_iterator null_it{nullptr};
         bool check = null_it == it;
         REQUIRE(check);
     } SECTION("Post increment") {
