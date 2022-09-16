@@ -3,31 +3,29 @@
 
 #include <functional>
 
-enum class node_color {
-    red, black
-};
-
 template<typename T, typename CMP = std::less<T>>
 class RBTree {
 private:
+
+    enum class node_color { red, black };
     struct Node;
 
-    std::unique_ptr<Node> root;
+    std::unique_ptr<Node> root {nullptr};
     CMP cmp;
 
     // check red black tree properties
-    bool check_root_black() const;
+    bool check_root_black() const noexcept;
 
-    bool check_red_node_has_black_children() const;
+    bool check_red_node_has_black_children() const noexcept;
 
-    bool check_number_black_nodes() const;
+    bool check_number_black_nodes() const noexcept;
 
-    bool check_all_paths_have_same_number_of_black_nodes(const std::vector<int> &number_black_nodes_of_paths) const;
+    bool check_all_paths_have_same_number_of_black_nodes(const std::vector<unsigned int> &number_black_nodes_of_paths) const noexcept;
 
     void
-    count_black_nodes_through_path(Node *node, std::vector<int> &number_black_nodes_of_paths, int index_of_path) const;
+    count_black_nodes_through_path(Node *node, std::vector<unsigned int> &number_black_nodes_of_paths, unsigned int index_of_path) const noexcept;
 
-    // utils
+
     void left_rotate(std::unique_ptr<Node> &x);
 
     void right_rotate(std::unique_ptr<Node> &x);
@@ -59,7 +57,6 @@ public:
 
     // move semantics
     RBTree(RBTree &&) noexcept = default;
-
     RBTree &operator=(RBTree &&) noexcept = default;
 
     // Copy semantics
@@ -97,6 +94,8 @@ public:
         }
         return os;
     }
+
+    ~RBTree() noexcept = default;
 
 };
 

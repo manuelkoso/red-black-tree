@@ -9,74 +9,77 @@
 
 template<typename T, typename CMP>
 struct RBTree<T, CMP>::Node {
-    Node *parent;
-    std::unique_ptr<Node> right;
-    std::unique_ptr<Node> left;
+
+    Node *parent {nullptr};
+    std::unique_ptr<Node> right {nullptr};
+    std::unique_ptr<Node> left {nullptr};
     T key;
     node_color color{node_color::red};
 
+    Node() = default;
     explicit Node(const T &value) :
             key{value} {}
 
-    bool parentExist() const;
+    bool parent_exist() const noexcept;
 
-    bool checkColor(node_color color) const;
+    bool check_color(const node_color color) const noexcept;
 
-    bool isLeftChild() const;
+    bool is_left_child() const noexcept;
 
-    bool isRightChild() const;
+    bool is_right_child() const noexcept;
 
-    bool leftChildExist() const;
+    bool left_child_exist() const noexcept;
 
-    bool rightChildExist() const;
+    bool right_child_exist() const noexcept;
 
-    bool hasBlackChildren() const;
+    bool has_black_children() const noexcept;
+
+    ~Node() noexcept = default;
 
 };
 
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::Node::hasBlackChildren() const {
-    if (rightChildExist() && right->checkColor(node_color::red)) return false;
-    if (leftChildExist() && left->checkColor(node_color::red)) return false;
-    return true;
-}
-
-template<typename T, typename CMP>
-bool RBTree<T, CMP>::Node::leftChildExist() const {
-    if (left) return true;
-    return false;
-}
-
-template<typename T, typename CMP>
-bool RBTree<T, CMP>::Node::rightChildExist() const {
-    if (left) return true;
-    return false;
-}
-
-
-template<typename T, typename CMP>
-bool RBTree<T, CMP>::Node::parentExist() const {
+bool RBTree<T, CMP>::Node::parent_exist() const noexcept {
     if (parent) return true;
     return false;
 }
 
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::Node::isRightChild() const {
-    if (parentExist() && parent->right.get() == this) return true;
+bool RBTree<T, CMP>::Node::check_color(const node_color col) const noexcept {
+    if (color == col) return true;
     return false;
 }
 
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::Node::isLeftChild() const {
-    if (parentExist() && parent->left.get() == this) return true;
+bool RBTree<T, CMP>::Node::is_left_child() const noexcept {
+    if (parent_exist() && parent->left.get() == this) return true;
     return false;
 }
 
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::Node::checkColor(node_color node_color) const {
-    if (color == node_color) return true;
+bool RBTree<T, CMP>::Node::is_right_child() const noexcept {
+    if (parent_exist() && parent->right.get() == this) return true;
     return false;
 }
 
+template<typename T, typename CMP>
+bool RBTree<T, CMP>::Node::left_child_exist() const noexcept {
+    if (left) return true;
+    return false;
+}
+
+template<typename T, typename CMP>
+bool RBTree<T, CMP>::Node::right_child_exist() const noexcept {
+    if (left) return true;
+    return false;
+}
+
+
+template<typename T, typename CMP>
+bool RBTree<T, CMP>::Node::has_black_children() const noexcept {
+    if (right_child_exist() && right->check_color(node_color::red)) return false;
+    if (left_child_exist() && left->check_color(node_color::red)) return false;
+    return true;
+}
 
 #endif //RED_BLACK_TREE_RBTNODE_H

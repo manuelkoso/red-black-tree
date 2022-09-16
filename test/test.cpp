@@ -110,7 +110,7 @@ TEST_CASE("Copy semantics") {
         tree.insert(i);
     }
 
-    RBTree<int> copy_ass_tree = tree;
+    RBTree<int> copy_assignment_tree = tree;
     RBTree<int> copy_constructor_tree{tree};
 
     int expected_value = -50;
@@ -120,7 +120,7 @@ TEST_CASE("Copy semantics") {
     }
 
     expected_value = -50;
-    for (auto node_value: copy_ass_tree) {
+    for (auto node_value: copy_assignment_tree) {
         REQUIRE(node_value == expected_value);
         expected_value++;
     }
@@ -130,6 +130,21 @@ TEST_CASE("Copy semantics") {
         REQUIRE(node_value == expected_value);
         expected_value++;
     }
+
+    tree.insert(200);
+    REQUIRE_FALSE(copy_assignment_tree.contains(200));
+    REQUIRE_FALSE(copy_constructor_tree.contains(200));
+    REQUIRE(tree.contains(200));
+
+    copy_assignment_tree.insert(300);
+    REQUIRE_FALSE(tree.contains(300));
+    REQUIRE_FALSE(copy_constructor_tree.contains(300));
+    REQUIRE(copy_assignment_tree.contains(300));
+
+    copy_constructor_tree.insert(400);
+    REQUIRE_FALSE(tree.contains(400));
+    REQUIRE_FALSE(copy_assignment_tree.contains(400));
+    REQUIRE(copy_constructor_tree.contains(400));
 
 }
 
@@ -146,15 +161,15 @@ TEST_CASE("Move semantics") {
         expected_value++;
     }
 
-    RBTree<int> move_ass_tree = std::move(tree);
+    RBTree<int> move_assignment_tree = std::move(tree);
 
     expected_value = -50;
-    for (auto node_value: move_ass_tree) {
+    for (auto node_value: move_assignment_tree) {
         REQUIRE(node_value == expected_value);
         expected_value++;
     }
 
-    RBTree<int> move_constructor_tree{std::move(move_ass_tree)};
+    RBTree<int> move_constructor_tree{std::move(move_assignment_tree)};
 
     expected_value = -50;
     for (auto node_value: move_constructor_tree) {
