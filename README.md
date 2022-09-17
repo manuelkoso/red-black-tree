@@ -37,14 +37,10 @@ The benchmark compares the `contains` function with the `find` function of the `
 
 ## Implementation choices
 
-I considered the NIL node as `nullptr`.
-
-The right and the left members of the `RBTree<T, CMP>::Node` class (that represent
-the right and the left child of the node) are unique pointers, unlike of the parent member
-(that represent the parent node) that is a raw pointer. I used unique pointers to avoid
-memory leaks.
-
-At the end of the `insert` and `erase` functions I put an assertion that check if
+- I considered the NIL node as `nullptr`.
+- The `Node` class is a private nested class of the `RBTree` class.
+- I used `std::unique_ptr` to avoid any memory leaks.
+- At the end of the `insert` and `erase` functions I put an assertion that check if
 the tree still satisfies the red black properties. When benchmarking the assertion is disabled with
 `NDEBUG` flag.
 
