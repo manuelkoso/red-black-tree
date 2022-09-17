@@ -3,7 +3,7 @@
 This repository contains a red black tree implementation for the Advanced Programming course 
 exam. 
 
-From [1], a red-black tree is a binary tree that satisfies the following red-black properties:
+From [ 1 ], a red-black tree is a binary tree that satisfies the following red-black properties:
 1. Every node is either red or black.
 2. The root is black.
 3. Every leaf ( NIL) is black.
@@ -23,7 +23,7 @@ is split among different files as follows:
 - `RBTInterface.h`: implementation of the public methods
 - `RBTPrivateFunctions`: implementation of the private functions
 
-In the `test_tree` folder there are all the tests that verify the public interface. There are 8 test_tree cases:
+In the `test` folder there are all the tests that verify the public interface and a simple benchmarking. There are 8 test cases:
 - Red black tree initialization
 - Insertion
 - Deletion
@@ -33,6 +33,7 @@ In the `test_tree` folder there are all the tests that verify the public interfa
 - Iterator
 - Output operator 
 
+The benchmarking compares the `contains` function with the `find` function of the `std::set` container.  
 
 ## Implementation choices
 
@@ -43,24 +44,32 @@ the right and the left child of the node) are unique pointers, unlike of the par
 (that represent the parent node) that is a raw pointer. I used unique pointers to avoid
 memory leaks.
 
-The implementation of the `insert` and `erase` public functions follows the pseudocode in [1]. 
-I had to do some changes from the original pseudocode because of the unique pointers that don't permit copy
+The implementation of the `insert` and `erase` public functions follows the pseudocode in [ 1 ]. 
+I had to do some small changes from the original pseudocode because of the unique pointers that don't permit copy
 assignment. 
 
 At the end of the `insert` and `erase` functions I put three assertions that check if
-the tree still satisfies the 2, 4 and 5 red black properties. The functions that check
-these properties are implemented in the `RBTCheckPropertiesFunctions.h` file.
+the tree still satisfies the 2, 4 and 5 red black properties. When benchmarking, the assertions are disabled with
+`NDEBUG` flag.
 
-## Building project and running tests
+## Building and running
 
+### Build project
 ```commandline
 mkdir RBT-build
 cd RBT-build
 cmake ../
 cmake --build .
-./RBT-test_tree
+```
+### Run tests
+```commandline
+./RBT-test
+```
+### Benchmark
+```commandline
+./RBT-benchmark
 ```
 
 ## References
-[1] <cite>Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford
+[ 1 ] <cite>Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford
   Stein. Introduction to Algorithms. The MIT Press, 2nd edition, 2001</cite>
