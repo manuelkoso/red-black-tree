@@ -38,7 +38,7 @@ The benchmark compares the `contains` function with the `find` function of the `
 ## Implementation choices
 
 - I considered the NIL node as `nullptr`.
-- The `Node` class is a private nested class of the `RBTree` class.
+- `Node` is a private nested struct of the `RBTree` class.
 - I used `std::unique_ptr` to avoid any memory leaks.
 - At the end of the `insert` and `erase` functions I put an assertion that check if
 the tree still satisfies the red black properties. When benchmarking the assertion is disabled with
