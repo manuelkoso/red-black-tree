@@ -101,11 +101,18 @@ typename RBTree<T, CMP>::Node *RBTree<T, CMP>::tree_minimum(RBTree::Node *x) con
 }
 
 template<typename T, typename CMP>
-typename RBTree<T, CMP>::Node *RBTree<T, CMP>::find(const T &value) const {
-    for (auto it = begin(); it != end(); ++it) {
-        if (*it == value) return it.node();
+typename RBTree<T, CMP>::Node *RBTree<T, CMP>::find_node(const T &value) const {
+    Node* current = root.get();
+    while(current) {
+        if(cmp(current->key,value)) {
+            current = current->right.get();
+        } else if (cmp(value,current->key)) {
+            current = current->left.get();
+        } else {
+            return current;
+        }
     }
-    return nullptr;
+    return current;
 }
 
 template<typename T, typename CMP>

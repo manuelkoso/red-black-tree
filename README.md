@@ -23,7 +23,7 @@ is split among different files as follows:
 - `RBTInterface.h`: implementation of the public methods
 - `RBTPrivateFunctions`: implementation of the private functions
 
-In the `test` folder there are all the tests that verify the public interface. There are 8 test cases:
+In the `test_tree` folder there are all the tests that verify the public interface. There are 8 test_tree cases:
 - Red black tree initialization
 - Insertion
 - Deletion
@@ -58,7 +58,7 @@ mkdir RBT-build
 cd RBT-build
 cmake ../
 cmake --build .
-./RBT-test
+./RBT-test_tree
 ```
 
 ## References

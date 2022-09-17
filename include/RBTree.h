@@ -40,7 +40,7 @@ private:
 
     Node *tree_minimum(Node *x) const;
 
-    Node *find(const T &value) const;
+    Node *find_node(const T &value) const;
 
     std::unique_ptr<Node> &get_uniq_pointer(Node *node);
 

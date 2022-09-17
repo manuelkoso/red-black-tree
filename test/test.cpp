@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 
 #include "../include/RBTree.h"
-#include <catch2/catch_all.hpp>
+#include "../include/catch.hpp"
 
 TEST_CASE("Red black tree initialization") {
     SECTION("Default constructor") {
