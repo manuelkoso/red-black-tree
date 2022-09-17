@@ -50,13 +50,13 @@ std::vector<int> get_random_values(int number_of_nodes) {
 int main() {
 
     std::vector<int> numbers_of_nodes {1000, 2000, 3000, 5000, 10000, 20000, 50000, 100000, 200000, 500000, 1000000};
-
+    std::cout << "**** Searching nodes (values are in microseconds) ****" << std::endl;
+    std::cout << "[Number of nodes] | [Tree] | [Set]" << std::endl;
     for(auto number_of_nodes : numbers_of_nodes) {
-        std::cout << number_of_nodes << " nodes: ";
+        std::cout << number_of_nodes << " | ";
         std::vector<int> random_values = get_random_values(number_of_nodes);
-        std::cout << "[Tree] ";
         test_tree(number_of_nodes, random_values);
-        std::cout << " [Set] ";
+        std::cout << " | ";
         test_set(number_of_nodes, random_values);
         std::cout << std::endl;
     }
