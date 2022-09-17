@@ -10,30 +10,27 @@ template<typename T, typename CMP = std::less<T>>
 class RBTree {
 private:
 
-    enum class node_color { red, black };
+    enum class node_color {
+        red, black
+    };
     struct Node;
-    std::unique_ptr<Node> root {nullptr};
     CMP cmp;
 
-    // check red black tree properties
-    bool check_root_black() const;
-    bool check_red_node_has_black_children() const;
-    bool check_number_black_nodes() const;
-    bool check_all_paths_have_same_number_of_black_nodes(const std::vector<unsigned int> &number_black_nodes_of_paths) const;
-    void
-    count_black_nodes_through_path(Node *node, std::vector<unsigned int> &number_black_nodes_of_paths, unsigned int index_of_path) const;
+    std::unique_ptr<Node> root{nullptr};
 
-
+    // Modify tree structure
     void left_rotate(std::unique_ptr<Node> &x);
 
     void right_rotate(std::unique_ptr<Node> &x);
 
     std::unique_ptr<Node> transplant(Node *u, std::unique_ptr<Node> &v);
 
+    // Fixup
     void delete_fixup(Node *x, Node *xp);
 
     void insert_fixup(Node *new_node);
 
+    // Utils
     Node *tree_minimum(Node *x) const;
 
     Node *find_node(const T &value) const;
@@ -44,7 +41,7 @@ public:
 
     class const_iterator;
 
-    // constructors
+    // Constructors
     RBTree() = default;
 
     RBTree(std::initializer_list<T> list) : root{nullptr} {
@@ -53,8 +50,9 @@ public:
         }
     }
 
-    // move semantics
+    // Move semantics
     RBTree(RBTree &&) noexcept = default;
+
     RBTree &operator=(RBTree &&) noexcept = default;
 
     // Copy semantics
@@ -63,6 +61,7 @@ public:
             insert(node_value);
         }
     }
+
     RBTree &operator=(const RBTree &tree) {
         root.reset();
         for (auto node_value: tree) {
@@ -70,6 +69,7 @@ public:
         }
     }
 
+    // Public methods
     const_iterator begin() const;
 
     const_iterator end() const;
@@ -80,6 +80,7 @@ public:
 
     bool erase(const T &value);
 
+    // Print
     friend std::ostream &operator<<(std::ostream &os, const RBTree &tree) {
         for (auto it = tree.begin(); it != tree.end(); ++it) {
             if (it == tree.begin()) {
@@ -92,6 +93,19 @@ public:
     }
 
     ~RBTree() noexcept = default;
+
+
+private:
+
+    // Check red black tree properties
+    bool check_properties() const;
+
+    bool
+    check_all_paths_have_same_number_of_black_nodes(const std::vector<unsigned int> &number_black_nodes_of_paths) const;
+
+    void
+    count_black_nodes_through_path(Node *node, std::vector<unsigned int> &number_black_nodes_of_paths,
+                                   unsigned int index_of_path) const;
 
 };
 

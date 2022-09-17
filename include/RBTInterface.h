@@ -50,9 +50,7 @@ void RBTree<T, CMP>::insert(const T &value) {
         new_node_parent->right->color = node_color::red;
         insert_fixup(new_node_parent->right.get());
     }
-    assert(check_red_node_has_black_children());
-    assert(check_root_black());
-    assert(check_number_black_nodes());
+    assert(check_properties());
 }
 
 template<typename T, typename CMP>
@@ -100,16 +98,13 @@ bool RBTree<T, CMP>::erase(const T &value) {
         delete_fixup(x, xp);
     }
 
-    assert(check_red_node_has_black_children());
-    assert(check_root_black());
-    assert(check_number_black_nodes());
-
+    assert(check_properties());
     return true;
 }
 
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::contains(const T &value) const {
-    if(find_node(value)) return true;
+    if (find_node(value)) return true;
     return false;
 }
 

@@ -8,24 +8,18 @@
 #include "RBTree.h"
 
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::check_root_black() const {
-    return root->check_color(node_color::black);
-}
+bool RBTree<T, CMP>::check_properties() const {
+    // Property 2
+    if(root->check_color(node_color::red)) return false;
 
-template<typename T, typename CMP>
-bool RBTree<T, CMP>::check_red_node_has_black_children() const {
     for (auto it = begin(); it != end(); ++it) {
         Node *current = it.node();
+        // Property 1
+        if(!current->check_color(node_color::red) && !current->check_color(node_color::black)) return false;
+        // Property 4
         if (current->check_color(node_color::red) && !current->has_black_children()) return false;
-    }
-    return true;
-}
 
-template<typename T, typename CMP>
-bool RBTree<T, CMP>::check_number_black_nodes() const {
-
-    for (auto it = begin(); it != end(); ++it) {
-        Node* current = it.node();
+        // Property 5
         std::vector<unsigned int> number_black_nodes_of_paths;
         if (current->right) {
             number_black_nodes_of_paths.push_back(0);
@@ -38,7 +32,6 @@ bool RBTree<T, CMP>::check_number_black_nodes() const {
     }
 
     return true;
-
 }
 
 template<typename T, typename CMP>
