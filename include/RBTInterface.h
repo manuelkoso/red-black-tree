@@ -50,9 +50,9 @@ void RBTree<T, CMP>::insert(const T &value) {
         new_node_parent->right->color = node_color::red;
         insert_fixup(new_node_parent->right.get());
     }
-    assert(check_red_node_has_black_children());
-    assert(check_root_black());
-    assert(check_number_black_nodes());
+    //assert(check_red_node_has_black_children());
+    //assert(check_root_black());
+    //assert(check_number_black_nodes());
 }
 
 template<typename T, typename CMP>
@@ -109,9 +109,17 @@ bool RBTree<T, CMP>::erase(const T &value) {
 
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::contains(const T &value) const {
-    auto it = std::find(begin(), end(), value);
-    if (it == end()) return false;
-    return true;
+    Node* current = root.get();
+    while(current) {
+        if(cmp(current->key,value)) {
+            current = current->right.get();
+        } else if (cmp(value,current->key)) {
+            current = current->left.get();
+        } else {
+            return true;
+        }
+    }
+    return false;
 }
 
 #endif //RED_BLACK_TREE_RBTINTERFACE_H
