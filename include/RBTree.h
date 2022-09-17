@@ -9,7 +9,6 @@
 template<typename T, typename CMP = std::less<T>>
 class RBTree {
 private:
-
     enum class node_color {
         red, black
     };
@@ -112,7 +111,7 @@ private:
 #include "RBTNode.h"
 #include "RBTConstIterator.h"
 #include "RBTCheckPropertiesFunctions.h"
-#include "RBTInterface.h"
 #include "RBTPrivateFunctions.h"
+#include "RBTInterface.h"
 
 #endif //RED_BLACK_TREE_RBTREE_H

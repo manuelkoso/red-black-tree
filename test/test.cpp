@@ -3,7 +3,7 @@
 #include "../include/RBTree.h"
 #include "../include/catch.hpp"
 
-TEST_CASE("Red black tree initialization") {
+TEST_CASE("Initialization") {
     SECTION("Default constructor") {
         RBTree<int> tree;
         bool check = tree.begin() == tree.end();

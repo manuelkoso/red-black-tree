@@ -4,11 +4,11 @@ This repository contains a red black tree implementation for the Advanced Progra
 exam. 
 
 From [ 1 ], a red-black tree is a binary tree that satisfies the following red-black properties:
-1. Every node is either red or black.
+1. Every get_node is either red or black.
 2. The root is black.
 3. Every leaf ( NIL) is black.
-4. If a node is red, then both its children are black.
-5. For each node, all simple paths from the node to descendant leaves contain the
+4. If a get_node is red, then both its children are black.
+5. For each get_node, all simple paths from the get_node to descendant leaves contain the
 same number of black nodes.
 
 ## Project structure
@@ -18,13 +18,13 @@ of the `RBTree` class (and the `catch.hpp` header). For readability reasons, the
 is split among different files as follows:
 - `RBTree.h`: declaration of the RBTree class
 - `RBTNode.h`: implementation of the private struct Node
-- `RBTCheckPropertiesFunctions.h`: implementation of functions that check 2, 4 and 5 red black properties
+- `RBTCheckPropertiesFunctions.h`: implementation of functions that check black properties
 - `RBTConstIterator.h`: implementation of the constant forward iterator
 - `RBTInterface.h`: implementation of the public methods
 - `RBTPrivateFunctions`: implementation of the private functions
 
-In the `test` folder there are all the tests that verify the public interface and a simple benchmarking. There are 8 test cases:
-- Red black tree initialization
+In the `test` folder there are all the tests that verify the public interface and a simple benchmark. There are 8 test cases:
+- Initialization
 - Insertion
 - Deletion
 - Searching
@@ -33,7 +33,7 @@ In the `test` folder there are all the tests that verify the public interface an
 - Iterator
 - Output operator 
 
-The benchmarking compares the `contains` function with the `find` function of the `std::set` container.  
+The benchmark compares the `contains` function with the `find` function of the `std::set` container.  
 
 ## Implementation choices
 
@@ -44,12 +44,8 @@ the right and the left child of the node) are unique pointers, unlike of the par
 (that represent the parent node) that is a raw pointer. I used unique pointers to avoid
 memory leaks.
 
-The implementation of the `insert` and `erase` public functions follows the pseudocode in [ 1 ]. 
-I had to do some small changes from the original pseudocode because of the unique pointers that don't permit copy
-assignment. 
-
-At the end of the `insert` and `erase` functions I put three assertions that check if
-the tree still satisfies the 2, 4 and 5 red black properties. When benchmarking, the assertions are disabled with
+At the end of the `insert` and `erase` functions I put an assertion that check if
+the tree still satisfies the red black properties. When benchmarking the assertion is disabled with
 `NDEBUG` flag.
 
 ## Building and running

@@ -44,8 +44,8 @@ public:
         return (current != it.current);
     }
 
-    // utility function
-    Node *node() const noexcept { return current; }
+    // Utility function
+    Node *get_node() const { return current; }
 
 };
 

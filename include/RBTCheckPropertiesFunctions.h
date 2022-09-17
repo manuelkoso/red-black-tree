@@ -13,7 +13,7 @@ bool RBTree<T, CMP>::check_properties() const {
     if(root->check_color(node_color::red)) return false;
 
     for (auto it = begin(); it != end(); ++it) {
-        Node *current = it.node();
+        Node *current = it.get_node();
         // Property 1
         if(!current->check_color(node_color::red) && !current->check_color(node_color::black)) return false;
         // Property 4
