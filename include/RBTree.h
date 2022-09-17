@@ -16,16 +16,12 @@ private:
     CMP cmp;
 
     // check red black tree properties
-    bool check_root_black() const noexcept;
-
-    bool check_red_node_has_black_children() const noexcept;
-
-    bool check_number_black_nodes() const noexcept;
-
-    bool check_all_paths_have_same_number_of_black_nodes(const std::vector<unsigned int> &number_black_nodes_of_paths) const noexcept;
-
+    bool check_root_black() const;
+    bool check_red_node_has_black_children() const;
+    bool check_number_black_nodes() const;
+    bool check_all_paths_have_same_number_of_black_nodes(const std::vector<unsigned int> &number_black_nodes_of_paths) const;
     void
-    count_black_nodes_through_path(Node *node, std::vector<unsigned int> &number_black_nodes_of_paths, unsigned int index_of_path) const noexcept;
+    count_black_nodes_through_path(Node *node, std::vector<unsigned int> &number_black_nodes_of_paths, unsigned int index_of_path) const;
 
 
     void left_rotate(std::unique_ptr<Node> &x);
@@ -67,7 +63,6 @@ public:
             insert(node_value);
         }
     }
-
     RBTree &operator=(const RBTree &tree) {
         root.reset();
         for (auto node_value: tree) {
@@ -75,7 +70,6 @@ public:
         }
     }
 
-    // Interface
     const_iterator begin() const;
 
     const_iterator end() const;

@@ -8,12 +8,12 @@
 #include "RBTree.h"
 
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::check_root_black() const noexcept {
+bool RBTree<T, CMP>::check_root_black() const {
     return root->check_color(node_color::black);
 }
 
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::check_red_node_has_black_children() const noexcept {
+bool RBTree<T, CMP>::check_red_node_has_black_children() const {
     for (auto it = begin(); it != end(); ++it) {
         Node *current = it.node();
         if (current->check_color(node_color::red) && !current->has_black_children()) return false;
@@ -22,7 +22,7 @@ bool RBTree<T, CMP>::check_red_node_has_black_children() const noexcept {
 }
 
 template<typename T, typename CMP>
-bool RBTree<T, CMP>::check_number_black_nodes() const noexcept {
+bool RBTree<T, CMP>::check_number_black_nodes() const {
 
     for (auto it = begin(); it != end(); ++it) {
         Node* current = it.node();
@@ -43,7 +43,7 @@ bool RBTree<T, CMP>::check_number_black_nodes() const noexcept {
 
 template<typename T, typename CMP>
 bool RBTree<T, CMP>::check_all_paths_have_same_number_of_black_nodes(
-        const std::vector<unsigned int> &number_black_nodes_of_paths) const noexcept {
+        const std::vector<unsigned int> &number_black_nodes_of_paths) const {
     if (!number_black_nodes_of_paths.empty()) {
         auto tmp = number_black_nodes_of_paths.at(0);
         for (std::size_t i = 1; i < number_black_nodes_of_paths.size(); i++) {
@@ -55,7 +55,7 @@ bool RBTree<T, CMP>::check_all_paths_have_same_number_of_black_nodes(
 
 template<typename T, typename CMP>
 void RBTree<T, CMP>::count_black_nodes_through_path(Node *node, std::vector<unsigned int> &number_black_nodes_of_paths,
-                                                    unsigned int index_of_path) const noexcept {
+                                                    unsigned int index_of_path) const {
     if (node && node->check_color(node_color::black)) {
         number_black_nodes_of_paths.at(index_of_path)++;
     }

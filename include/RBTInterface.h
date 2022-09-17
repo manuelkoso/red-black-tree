@@ -50,9 +50,9 @@ void RBTree<T, CMP>::insert(const T &value) {
         new_node_parent->right->color = node_color::red;
         insert_fixup(new_node_parent->right.get());
     }
-    //assert(check_red_node_has_black_children());
-    //assert(check_root_black());
-    //assert(check_number_black_nodes());
+    assert(check_red_node_has_black_children());
+    assert(check_root_black());
+    assert(check_number_black_nodes());
 }
 
 template<typename T, typename CMP>
